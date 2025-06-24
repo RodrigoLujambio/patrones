@@ -1,40 +1,1214 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Patrones de Diseño - Presentación</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/black.css"
+    />
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+    <style>
+      section h2 {
+        color: #ffd700;
+        font-size: 1.5em;
+      }
+      section h3 {
+        color: #00ced1;
+        font-size: 1.3em;
+      }
+      section ul li,
+      section p {
+        color: #e0e0e0;
+        font-size: 0.9em;
+      }
+      pre code {
+        font-size: 0.8em;
+      }
+      table {
+        font-size: 0.9em;
+        color: #fff;
+      }
+      th,
+      td {
+        padding: 8px 12px;
+        border: 1px solid #999;
+      }
+      table {
+        border-collapse: collapse;
+        margin: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h1 style="color: #7fffd4; font-size: 2em">🌉 Patrones de Diseño</h1>
+          <p style="color: #d3d3d3; font-size: 1em">
+            DAO, Repository, Proxy, Decorator, Facade, Adapter, Bridge
+          </p>
+        </section>
 
-		<title>reveal.js</title>
+        <!-- PATRON: Adapter -->
+        <section><h2>🔌 Adapter</h2></section>
 
-		<link rel="stylesheet" href="dist/reset.css">
-		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+        <section>
+          <h3>¿Qué es?</h3>
+          <p>
+            🔧 El patrón Adapter permite que dos interfaces incompatibles
+            trabajen juntas. Actúa como un puente entre dos clases que no
+            podrían interactuar directamente debido a diferencias en sus
+            interfaces.
+          </p>
+        </section>
 
-		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css">
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+        <section>
+          <h3>¿Cuándo usarlo? 🧠</h3>
+          <ul>
+            <li>
+              Cuando querés usar una clase existente pero su interfaz no
+              coincide con lo que espera tu código.
+            </li>
+            <li>
+              Cuando necesitás integrar código heredado o de terceros sin
+              modificarlo.
+            </li>
+          </ul>
+        </section>
 
-		<script src="dist/reveal.js"></script>
-		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script src="plugin/highlight/highlight.js"></script>
-		<script>
-			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
-			// - https://revealjs.com/config/
-			Reveal.initialize({
-				hash: true,
+        <section>
+          <h3>Componentes principales 🧩</h3>
+          <ul>
+            <li><strong>Target</strong>: La interfaz que espera el cliente.</li>
+            <li>
+              <strong>Adaptee</strong>: La clase existente con la funcionalidad
+              deseada.
+            </li>
+            <li>
+              <strong>Adapter</strong>: Traduce la interfaz de Adaptee a la del
+              Target.
+            </li>
+          </ul>
+        </section>
 
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
-			});
-		</script>
-	</body>
+        <section>
+          <h3>Clase Target</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// Target: interfaz esperada por el cliente
+class Printer {
+  printMessage(msg) {
+    throw new Error("Este método debe ser implementado");
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>Clase Adaptee</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// Adaptee: clase ya existente
+class LegacyPrinter {
+  oldPrint(msg) {
+    console.log(">>> " + msg);
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>Clase Adapter</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// Adapter: adapta LegacyPrinter a la interfaz esperada
+class PrinterAdapter extends Printer {
+  constructor() {
+    super();
+    this.legacy = new LegacyPrinter();
+  }
+
+  printMessage(msg) {
+    this.legacy.oldPrint(msg);
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>Uso desde el cliente</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// Cliente usa el adapter sin saber que existe LegacyPrinter
+const printer = new PrinterAdapter();
+printer.printMessage("Hola mundo");
+        </code></pre>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">✅ Ventajas y ⚠️ Desventajas</h3>
+          <ul style="font-size: 0.8em">
+            <li><strong style="color: #90ee90">✅ Ventajas</strong></li>
+            <ul>
+              <li>
+                Te permite <strong>reutilizar código existente</strong> sin
+                modificarlo.
+              </li>
+              <li>Aísla cambios en la implementación del código cliente.</li>
+              <li>Facilita la integración de librerías o sistemas legados.</li>
+            </ul>
+            <br />
+            <li><strong style="color: #ffd700">⚠️ Desventajas</strong></li>
+            <ul>
+              <li>
+                Puede <strong>agregar complejidad</strong> innecesaria si se
+                abusa.
+              </li>
+              <li>
+                En algunos lenguajes, puede implicar una
+                <strong>carga extra de herencia o composición</strong>.
+              </li>
+            </ul>
+          </ul>
+        </section>
+
+        <!-- PATRON: Bridge -->
+        <section><h2>🌉 Bridge</h2></section>
+
+        <section>
+          <h3>¿Qué es?</h3>
+          <p>
+            🧱 El patrón Bridge separa una abstracción de su implementación,
+            permitiendo que ambas evolucionen independientemente.
+          </p>
+        </section>
+
+        <section>
+          <h3>¿Cuándo usarlo? 🧠</h3>
+          <ul>
+            <li>
+              Cuando tenés una jerarquía de clases que podría crecer en
+              múltiples dimensiones.
+            </li>
+            <li>
+              Cuando querés combinar libremente una abstracción con diferentes
+              implementaciones.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Componentes principales 🧩</h3>
+          <ul>
+            <li>
+              <strong>Abstraction</strong>: La interfaz de alto nivel para el
+              cliente.
+            </li>
+            <li>
+              <strong>Implementor</strong>: Define la interfaz de
+              implementación.
+            </li>
+            <li>
+              <strong>ConcreteImplementor</strong>: Implementaciones concretas
+              del implementor.
+            </li>
+            <li>
+              <strong>RefinedAbstraction</strong>: Extiende la abstracción y
+              delega a un implementor.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Clase Abstraction</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// Abstraction: interfaz de alto nivel
+class Shape {
+  constructor(drawingAPI) {
+    this.drawingAPI = drawingAPI;
+  }
+
+  draw() {
+    throw new Error("Este método debe ser implementado");
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Clase RefinedAbstraction: Circle</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// RefinedAbstraction: extensión concreta de Shape
+class Circle extends Shape {
+  constructor(x, y, radius, drawingAPI) {
+    super(drawingAPI);
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+  }
+
+  draw() {
+    this.drawingAPI.drawCircle(this.x, this.y, this.radius);
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Otra RefinedAbstraction: Rectángulo</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// Otra forma que usa DrawingAPI
+class Rectangle extends Shape {
+  constructor(x, y, width, height, drawingAPI) {
+    super(drawingAPI);
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+  }
+
+  draw() {
+    this.drawingAPI.drawRectangle(this.x, this.y, this.width, this.height);
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Clase Implementor</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// Implementor: define la interfaz de bajo nivel
+class DrawingAPI {
+  drawCircle(x, y, radius) {
+    throw new Error("Este método debe ser implementado");
+  }
+  drawRectangle(x, y, width, height) {
+    throw new Error("Este método debe ser implementado");
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>ConcreteImplementor: CanvasAPI</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// Implementación concreta de DrawingAPI
+class CanvasAPI extends DrawingAPI {
+  drawCircle(x, y, radius) {
+    console.log(`Canvas: Dibujo un círculo en (${x}, ${y}) con radio ${radius}`);
+  }
+  drawRectangle(x, y, width, height) {
+    console.log(`Canvas: Dibujo un rectángulo en (${x}, ${y}) de ${width}x${height}`);
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>ConcreteImplementor: SVGAPI</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// Otra implementación concreta de DrawingAPI
+class SVGAPI extends DrawingAPI {
+  drawCircle(x, y, radius) {
+    console.log(`<circle cx='${x}' cy='${y}' r='${radius}' />`);
+  }
+  drawRectangle(x, y, width, height) {
+    console.log(`<rect x='${x}' y='${y}' width='${width}' height='${height}' />`);
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Ejemplos de uso</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// Usar Circle con CanvasAPI
+const canvasCircle = new Circle(10, 20, 5, new CanvasAPI());
+canvasCircle.draw();
+
+// Usar Circle con SVGAPI
+const svgCircle = new Circle(0, 0, 10, new SVGAPI());
+svgCircle.draw();
+
+// Usar Rectangle con CanvasAPI
+const rect = new Rectangle(5, 5, 20, 10, new CanvasAPI());
+rect.draw();
+  </code></pre>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">✅ Ventajas</h3>
+          <ul style="font-size: 0.8em">
+            <li>
+              Desacopla <strong>abstracción</strong> e
+              <strong>implementación</strong>.
+            </li>
+            <li>
+              Permite <strong>combinar libremente</strong> formas y métodos de
+              renderizado (composición).
+            </li>
+            <li>
+              Facilita la <strong>extensión</strong> sin modificar código
+              existente.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">⚠️ Desventajas</h3>
+          <ul style="font-size: 0.8em">
+            <li>
+              Introduce más <strong>clases y capas</strong> (complejidad
+              adicional).
+            </li>
+            <li>
+              Puede parecer <strong>innecesario</strong> si la jerarquía no es
+              grande.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">🆚 Diferencia clave con Adapter</h3>
+          <ul style="font-size: 0.8em">
+            <li>
+              <strong>Adapter</strong> adapta una interfaz existente para que
+              sea compatible.
+            </li>
+            <li>
+              <strong>Bridge</strong> separa dos jerarquías desde el diseño para
+              que crezcan de forma independiente.
+            </li>
+          </ul>
+        </section>
+
+        <!-- PATRON: Decorator -->
+        <section><h2>🎁 Decorator</h2></section>
+
+        <section>
+          <h3>¿Qué es?</h3>
+          <p>
+            ✨ El patrón Decorator permite agregar responsabilidades a un objeto
+            de forma dinámica, sin modificar su código.
+          </p>
+        </section>
+
+        <section>
+          <h3>¿Cuándo usarlo? 🧠</h3>
+          <ul>
+            <li>
+              Cuando querés agregar funcionalidades a objetos en tiempo de
+              ejecución.
+            </li>
+            <li>Cuando no podés usar herencia para extender comportamiento.</li>
+            <li>
+              Cuando querés mantener el principio de abierto/cerrado
+              (Open/Closed).
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Componentes principales 🧩</h3>
+          <ul>
+            <li>
+              <strong>Component</strong>: Interfaz base que define la operación.
+            </li>
+            <li>
+              <strong>ConcreteComponent</strong>: Implementación principal de
+              esa interfaz.
+            </li>
+            <li>
+              <strong>Decorator</strong>: Clase abstracta que implementa la
+              interfaz y tiene una referencia al componente a decorar.
+            </li>
+            <li>
+              <strong>ConcreteDecorators</strong>: Decoradores específicos que
+              agregan comportamiento.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Componente base</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// Component
+class Notifier {
+  send(message) {
+    throw new Error("Este método debe ser implementado");
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Componente concreto</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// ConcreteComponent
+class BasicNotifier extends Notifier {
+  send(message) {
+    console.log("Enviando mensaje:", message);
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Decorator base</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// Decorator base
+class NotifierDecorator extends Notifier {
+  constructor(notifier) {
+    super();
+    this.notifier = notifier;
+  }
+
+  send(message) {
+    this.notifier.send(message);
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>ConcreteDecorator: Emoji</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// Agrega emojis al mensaje
+class EmojiDecorator extends NotifierDecorator {
+  send(message) {
+    super.send("😀 " + message + " 🎉");
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>ConcreteDecorator: Timestamp</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// Agrega una marca de tiempo
+class TimestampDecorator extends NotifierDecorator {
+  send(message) {
+    const timestamp = new Date().toISOString();
+    super.send(`[${timestamp}] ${message}`);
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Uso desde el cliente</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// Composición dinámica de decoradores
+let notifier = new BasicNotifier();
+notifier = new TimestampDecorator(notifier);
+notifier = new EmojiDecorator(notifier);
+
+notifier.send("¡Hola mundo!");
+// Resultado esperado:
+// Enviando mensaje: 😀 [2025-06-24T12:00:00.000Z] ¡Hola mundo! 🎉
+  </code></pre>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">✅ Ventajas</h3>
+          <ul style="font-size: 0.8em">
+            <li>
+              Permite extender funcionalidades de manera flexible y
+              <strong>dinámica</strong>.
+            </li>
+            <li>
+              Elimina la necesidad de
+              <strong>crear muchas subclases</strong> para cada combinación
+              posible.
+            </li>
+            <li>
+              Respeta el <strong>principio de responsabilidad única</strong>.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">⚠️ Desventajas</h3>
+          <ul style="font-size: 0.8em">
+            <li>
+              Puede generar <strong>muchos objetos anidados</strong> si se
+              abusa.
+            </li>
+            <li>
+              Puede ser más difícil de <strong>depurar</strong> o entender que
+              la herencia simple.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">🆚 Diferencias con otros patrones</h3>
+          <ul style="font-size: 0.8em">
+            <li>
+              <strong>Decorator vs Adapter</strong>: Adapter cambia la
+              <strong>interfaz</strong>; Decorator
+              <strong>agrega comportamiento</strong>.
+            </li>
+          </ul>
+        </section>
+
+        <!-- PATRON: Facade -->
+        <section><h2>🏢 Facade</h2></section>
+
+        <section>
+          <h3>¿Qué es?</h3>
+          <p>
+            🎯 El patrón Facade proporciona una interfaz simplificada a un
+            conjunto complejo de clases o subsistemas.
+          </p>
+        </section>
+
+        <section>
+          <h3>¿Cuándo usarlo? 🧠</h3>
+          <ul>
+            <li>Cuando querés ocultar la complejidad de un sistema interno.</li>
+            <li>Cuando querés desacoplar el cliente del sistema interno.</li>
+            <li>
+              Cuando trabajás con bibliotecas o APIs con muchas dependencias.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Componentes principales 🧩</h3>
+          <ul>
+            <li><strong>Facade</strong>: Interfaz de alto nivel.</li>
+            <li>
+              <strong>Subsistemas</strong>: Clases que hacen el trabajo real.
+            </li>
+            <li>
+              <strong>Cliente</strong>: Usa el Facade en lugar de interactuar
+              directamente con los subsistemas.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Clases del subsistema 🎬</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class Amplifier {
+  on() {
+    console.log("Amplificador encendido");
+  }
+}
+
+class StreamingPlayer {
+  on() {
+    console.log("Reproductor encendido");
+  }
+  play(movie) {
+    console.log(`Reproduciendo ${movie}`);
+  }
+}
+
+class TheaterLights {
+  dim(level) {
+    console.log(`Luces atenuadas a ${level}%`);
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Clase Facade: HomeTheaterFacade 🍿</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class HomeTheaterFacade {
+  constructor(amp, player, lights) {
+    this.amp = amp;
+    this.player = player;
+    this.lights = lights;
+  }
+
+  watchMovie(movie) {
+    console.log("Preparando para ver una película...");
+    this.lights.dim(10);
+    this.amp.on();
+    this.player.on();
+    this.player.play(movie);
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Escenario sin Facade ❌</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+const amp = new Amplifier();
+const player = new StreamingPlayer();
+const lights = new TheaterLights();
+
+lights.dim(10);
+amp.on();
+player.on();
+player.play("Matrix");
+// Difícil de mantener, propenso a errores,
+// y repetitivo cada vez que se quiere reproducir una película
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Uso con Facade ✅</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+const amp = new Amplifier();
+const player = new StreamingPlayer();
+const lights = new TheaterLights();
+
+const homeTheater = new HomeTheaterFacade(amp, player, lights);
+homeTheater.watchMovie("Matrix");
+
+// Resultado:
+// Preparando para ver una película...
+// Luces atenuadas a 10%
+// Amplificador encendido
+// Reproductor encendido
+// Reproduciendo Matrix
+  </code></pre>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">✅ Ventajas</h3>
+          <ul style="font-size: 0.8em">
+            <li><strong>Oculta la complejidad</strong> del sistema.</li>
+            <li>
+              Reduce el <strong>acoplamiento</strong> entre cliente y
+              subsistema.
+            </li>
+            <li>
+              Mejora la <strong>legibilidad y mantenibilidad</strong> del código
+              cliente.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">⚠️ Desventajas</h3>
+          <ul style="font-size: 0.8em">
+            <li>
+              Puede convertirse en una <strong>“clase dios”</strong> si se
+              abusa.
+            </li>
+            <li>
+              No impide al cliente seguir accediendo al subsistema directamente
+              (si no se controla).
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">🆚 Comparaciones</h3>
+          <ul style="font-size: 0.8em">
+            <li>
+              <strong>Facade vs Adapter:</strong>
+              <ul>
+                <li>
+                  <em>Facade</em> simplifica una interfaz
+                  <strong>compleja existente</strong>.
+                </li>
+                <li>
+                  <em>Adapter</em> convierte una
+                  <strong>interfaz incompatible</strong> en una que el cliente
+                  espera.
+                </li>
+              </ul>
+            </li>
+            <li>
+              <strong>Facade vs Decorator:</strong>
+              <ul>
+                <li>
+                  <em>Decorator</em> añade <strong>comportamiento</strong>.
+                </li>
+                <li><em>Facade</em> oculta <strong>complejidad</strong>.</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+
+        <!-- PATRON: Proxy -->
+        <section><h2>🛡️ Proxy</h2></section>
+
+        <section>
+          <h3>¿Qué es?</h3>
+          <p>
+            🕵️‍♂️ El patrón Proxy provee un objeto sustituto que controla el acceso
+            a otro objeto.
+          </p>
+        </section>
+
+        <section>
+          <h3>¿Cuándo usarlo? 🧠</h3>
+          <ul>
+            <li>Para controlar el acceso a un objeto costoso o sensible.</li>
+            <li>
+              Para agregar lógica adicional (logs, control de acceso, cache) sin
+              modificar el objeto real.
+            </li>
+            <li>Para cargar objetos de manera diferida (lazy loading).</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Tipos de Proxy 🔀</h3>
+          <ul>
+            <li>
+              <strong>Proxy de protección</strong>: Controla permisos de acceso.
+            </li>
+            <li>
+              <strong>Proxy virtual</strong>: Crea objetos costosos bajo
+              demanda.
+            </li>
+            <li>
+              <strong>Proxy remoto</strong>: Representa un objeto que está en
+              otra máquina.
+            </li>
+            <li>
+              <strong>Proxy de caché</strong>: Guarda resultados para
+              reutilizarlos.
+            </li>
+            <li>
+              <strong>Proxy inteligente</strong>: Agrega lógica adicional como
+              logging o conteo de referencias.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Componentes principales 🧩</h3>
+          <ul>
+            <li>
+              <strong>Subject</strong>: Interfaz común para el RealSubject y el
+              Proxy.
+            </li>
+            <li>
+              <strong>RealSubject</strong>: El objeto real al que se accede.
+            </li>
+            <li><strong>Proxy</strong>: Controla el acceso al RealSubject.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Interfaz Subject</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class Video {
+  constructor(filename) {
+    this.filename = filename;
+    this.load();
+  }
+
+  load() {
+    console.log(`Cargando video desde ${this.filename}...`);
+  }
+
+  play() {
+    console.log(`Reproduciendo ${this.filename}`);
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Proxy: Proxy que retrasa la carga de video</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class VideoProxy {
+  constructor(filename) {
+    this.filename = filename;
+    this.realVideo = null;
+  }
+
+  play() {
+    if (!this.realVideo) {
+      this.realVideo = new Video(this.filename); // carga solo al primer uso
+    }
+    this.realVideo.play();
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Uso desde el cliente</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+const video = new VideoProxy("pelicula.mp4");
+console.log("Video creado pero no cargado aún");
+video.play(); // aquí recién se carga y reproduce
+video.play(); // ya está cargado, se reproduce directamente
+  </code></pre>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">✅ Ventajas</h3>
+          <ul style="font-size: 0.8em">
+            <li>
+              Permite <strong>controlar el acceso</strong> a objetos costosos o
+              sensibles.
+            </li>
+            <li>
+              Agrega <strong>funcionalidad extra</strong> como logs, control de
+              acceso o cache.
+            </li>
+            <li>Permite <strong>lazy loading</strong> (carga diferida).</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">⚠️ Desventajas</h3>
+          <ul style="font-size: 0.8em">
+            <li>
+              Puede
+              <strong>introducir una capa de complejidad</strong> adicional.
+            </li>
+            <li>
+              Si no está bien diseñado, puede
+              <strong>afectar el rendimiento</strong>.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">🆚 Comparaciones</h3>
+          <ul style="font-size: 0.8em">
+            <li>
+              <strong>Proxy vs Decorator:</strong> Proxy
+              <strong>controla acceso</strong>; Decorator
+              <strong>agrega comportamiento</strong>.
+            </li>
+            <li>
+              <strong>Proxy vs Adapter:</strong> Adapter
+              <strong>transforma interfaces</strong>; Proxy
+              <strong>intercepta y decide acceso</strong>.
+            </li>
+          </ul>
+        </section>
+
+        <!-- PATRON: DAO -->
+        <section><h2>📂 DAO (Data Access Object)</h2></section>
+
+        <section>
+          <h3>¿Qué es?</h3>
+          <p>
+            📁 El patrón DAO encapsula el acceso a datos, separando la lógica de
+            negocio de la lógica de persistencia.
+          </p>
+        </section>
+
+        <section>
+          <h3>¿Cuándo usarlo? 🧠</h3>
+          <ul>
+            <li>
+              Cuando querés desacoplar tu lógica de negocio del acceso a la base
+              de datos.
+            </li>
+            <li>
+              Cuando querés facilitar el testeo o intercambiar mecanismos de
+              persistencia.
+            </li>
+            <li>Cuando tenés múltiples fuentes de datos o repositorios.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Componentes principales 🧩</h3>
+          <ul>
+            <li>
+              <strong>DAO</strong>: Define los métodos para acceder y modificar
+              datos.
+            </li>
+            <li>
+              <strong>Entidad</strong>: Representa la estructura de datos.
+            </li>
+            <li>
+              <strong>Implementación concreta</strong>: Lógica específica de
+              almacenamiento.
+            </li>
+            <li>
+              <strong>Servicio/Cliente</strong>: Usa el DAO sin saber cómo se
+              persisten los datos.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Entidad: Usuario</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class User {
+  constructor(id, name) {
+    this.id = id;
+    this.name = name;
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Interfaz DAO</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class UserDAO {
+  getAll() {
+    throw new Error("No implementado");
+  }
+  getById(id) {
+    throw new Error("No implementado");
+  }
+  save(user) {
+    throw new Error("No implementado");
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Implementación concreta (en memoria)</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class InMemoryUserDAO extends UserDAO {
+  constructor() {
+    super();
+    this.users = [];
+  }
+
+  getAll() {
+    return this.users;
+  }
+
+  getById(id) {
+    return this.users.find(u => u.id === id);
+  }
+
+  save(user) {
+    this.users.push(user);
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Uso desde el cliente</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+const dao = new InMemoryUserDAO();
+
+dao.save(new User(1, "Alice"));
+dao.save(new User(2, "Bob"));
+
+console.log(dao.getAll());
+console.log(dao.getById(2));
+
+// Resultado esperado:
+// [ User { id: 1, name: 'Alice' }, User { id: 2, name: 'Bob' } ]
+// User { id: 2, name: 'Bob' }
+  </code></pre>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">✅ Ventajas</h3>
+          <ul style="font-size: 0.8em">
+            <li>
+              Separa <strong>lógica de acceso a datos</strong> de la lógica de
+              negocio.
+            </li>
+            <li>Facilita <strong>el testeo</strong> y el mantenimiento.</li>
+            <li>
+              Permite <strong>cambiar el mecanismo de persistencia</strong> sin
+              modificar el resto del sistema.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">⚠️ Desventajas</h3>
+          <ul style="font-size: 0.8em">
+            <li>
+              Puede resultar en <strong>clases repetitivas</strong> si no se
+              abstraen bien.
+            </li>
+            <li>
+              Puede ser <strong>innecesario</strong> en aplicaciones pequeñas o
+              muy simples.
+            </li>
+          </ul>
+        </section>
+
+        <!-- PATRON: Repository -->
+        <section><h2>📦 Repository</h2></section>
+
+        <section>
+          <h3>¿Qué es?</h3>
+          <p>
+            📚 El patrón Repository actúa como una colección en memoria,
+            permitiendo acceder a objetos sin exponer detalles de
+            almacenamiento. Aísla la lógica de acceso a datos del resto de la
+            aplicación.
+          </p>
+        </section>
+
+        <section>
+          <h3>¿Cuándo usarlo? 🧠</h3>
+          <ul>
+            <li>
+              Cuando querés abstraer la lógica de consulta y persistencia.
+            </li>
+            <li>Cuando trabajás con modelos de dominio complejos.</li>
+            <li>
+              Cuando querés desacoplar servicios de la lógica de almacenamiento.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Componentes principales 🧩</h3>
+          <ul>
+            <li>
+              <strong>Repositorio</strong>: Provee operaciones sobre entidades
+              del dominio.
+            </li>
+            <li>
+              <strong>Entidad</strong>: Modelo del dominio que se gestiona.
+            </li>
+            <li>
+              <strong>Fuente de datos</strong>: Base de datos, servicio externo,
+              o DAO.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Entidad: Product</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class Product {
+  constructor(id, name) {
+    this.id = id;
+    this.name = name;
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Repositorio sin DAO ❌</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class ProductRepository {
+  constructor() {
+    this.products = [];
+  }
+
+  findAll() {
+    return this.products;
+  }
+
+  findById(id) {
+    return this.products.find(p => p.id === id);
+  }
+
+  save(product) {
+    this.products.push(product);
+  }
+}
+
+const repo = new ProductRepository();
+repo.save(new Product(1, "Silla"));
+repo.save(new Product(2, "Mesa"));
+
+console.log(repo.findAll());
+console.log(repo.findById(2));
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>DAO para productos</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class ProductDAO {
+  constructor() {
+    this.storage = [];
+  }
+
+  getAll() {
+    return this.storage;
+  }
+
+  getById(id) {
+    return this.storage.find(p => p.id === id);
+  }
+
+  save(product) {
+    this.storage.push(product);
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Repositorio con DAO ✅</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+
+// Repository que usa DAO
+class ProductRepository {
+  constructor(dao) {
+    this.dao = dao;
+  }
+
+  getAllProducts() {
+    return this.dao.getAll();
+  }
+
+  getProductById(id) {
+    return this.dao.getById(id);
+  }
+
+  addProduct(product) {
+    this.dao.save(product);
+  }
+}
+
+const dao = new ProductDAO();
+const repository = new ProductRepository(dao);
+
+repository.addProduct(new Product(1, "Lámpara"));
+repository.addProduct(new Product(2, "Sofá"));
+
+console.log(repository.getAllProducts());
+console.log(repository.getProductById(1));
+  </code></pre>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">✅ Ventajas</h3>
+          <ul style="font-size: 0.8em">
+            <li>Encapsula la lógica de acceso y consulta.</li>
+            <li>
+              Ofrece una <strong>API coherente</strong> para trabajar con
+              objetos del dominio.
+            </li>
+            <li>Facilita pruebas y mantenimiento.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">⚠️ Desventajas</h3>
+          <ul style="font-size: 0.8em">
+            <li>Puede duplicar trabajo si ya se usa un ORM sofisticado.</li>
+            <li>
+              Agrega una capa más que puede <strong>no ser necesaria</strong> en
+              sistemas simples.
+            </li>
+          </ul>
+        </section>
+
+        <!-- Aquí seguirán los demás patrones -->
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.min.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script>
+      Reveal.initialize({
+        hash: true,
+        slideNumber: true,
+        plugins: [RevealHighlight],
+      });
+    </script>
+  </body>
 </html>
