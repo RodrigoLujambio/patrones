@@ -1198,6 +1198,1277 @@ console.log(repository.getProductById(1));
         </section>
 
         <!-- Aquí seguirán los demás patrones -->
+
+        <section>
+          <h1 style="color: #7fffd4; font-size: 2em">
+            🌉 Patrones de Diseño 2
+          </h1>
+          <p style="color: #d3d3d3; font-size: 1em">
+            CoR, Command, Mediator, Memento, State, Strategy, Visitor
+          </p>
+        </section>
+
+        <!-- PATRON: CoR -->
+        <section><h2>Chain of Responsability</h2></section>
+
+        <section>
+          <h3>Clase Handler</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// Handler base
+class Handler {
+  setNext(handler) {
+    this.next = handler;
+    return handler;
+  }
+
+  handle(request) {
+    if (this.next) {
+      return this.next.handle(request);
+    }
+
+    return null;
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>Handlers Concretos</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class SupportHandler extends Handler {
+  handle(request) {
+    if (request.type === "soporte") {
+      return "🎧 Soporte técnico respondió tu solicitud";
+    }
+    return super.handle(request);
+  }
+}
+
+class BillingHandler extends Handler {
+  handle(request) {
+    if (request.type === "factura") {
+      return "💰 Facturación procesó tu solicitud";
+    }
+    return super.handle(request);
+  }
+}
+
+class GeneralHandler extends Handler {
+  handle(request) {
+    return "📨 Derivado a atención general";
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>Uso</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+const soporte = new SupportHandler();
+const facturacion = new BillingHandler();
+const general = new GeneralHandler();
+
+soporte.setNext(facturacion).setNext(general);
+
+console.log(soporte.handle({ type: "soporte" }));
+// 🎧 Soporte técnico respondió tu solicitud
+
+console.log(soporte.handle({ type: "factura" }));
+// 💰 Facturación procesó tu solicitud
+
+console.log(soporte.handle({ type: "otro" }));
+// 📨 Derivado a atención general
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>¿Qué es?</h3>
+          <p>
+            El patrón Chain of Responsibility (Cadena de Responsabilidad) es un
+            patrón de comportamiento que permite que varios objetos tengan la
+            oportunidad de manejar una solicitud, sin que el emisor de la
+            solicitud conozca cuál objeto la va a procesar. Los objetos están
+            encadenados y la solicitud se pasa por la cadena hasta que un objeto
+            la maneja.
+          </p>
+        </section>
+
+        <section>
+          <h3>🧱 ¿Cómo funciona?</h3>
+          <p>Cada objeto de la cadena:</p>
+          <ul>
+            <li>Decide si maneja la solicitud o</li>
+            <li>La pasa al siguiente en la cadena</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>¿Cuándo usarlo? 🧠</h3>
+          <ul>
+            <li>
+              Cuando querés desacoplar el emisor de la solicitud de los
+              receptores.
+            </li>
+            <li>Cuando más de un objeto puede manejar una solicitud.</li>
+            <li>
+              Cuando querés flexibilidad al agregar nuevos manejadores sin
+              modificar código existente.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Componentes principales 🧩</h3>
+          <ul>
+            <li>
+              <strong>Handler</strong>: Interfaz que define el contrato de
+              manejo y referencia al siguiente.
+            </li>
+            <li>
+              <strong>Concrete Handler</strong>: Implementa la lógica de manejo.
+              Si no puede manejar, delega.
+            </li>
+            <li><strong>Client</strong>: Crea y configura la cadena.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3 style="font-size: 1.1em">✅ Ventajas y ⚠️ Desventajas</h3>
+          <ul style="font-size: 0.8em">
+            <li><strong style="color: #90ee90">✅ Ventajas</strong></li>
+            <ul>
+              <li>Desacopla el emisor del receptor.</li>
+              <li>Fácil de extender agregando nuevos manejadores.</li>
+              <li>Permite control dinámico del flujo.</li>
+            </ul>
+            <br />
+            <li><strong style="color: #ffd700">⚠️ Desventajas</strong></li>
+            <ul>
+              <li>Puede ser difícil de seguir si la cadena es muy larga.</li>
+              <li>No garantiza que alguien maneje la solicitud.</li>
+            </ul>
+          </ul>
+        </section>
+
+        <section>
+          <h1 style="color: #7fffd4; font-size: 2em">🎮 Command</h1>
+        </section>
+
+        <section>
+          <h3>¿Qué es?</h3>
+          <p>
+            El patrón <strong>Command</strong> encapsula una solicitud como un
+            objeto, permitiendo parametrizar acciones, soportar operaciones
+            deshacer (undo), y almacenar historial.
+          </p>
+        </section>
+
+        <section>
+          <h3>¿Cuándo usarlo? 🧠</h3>
+          <ul>
+            <li>Cuando querés encapsular acciones como objetos.</li>
+            <li>
+              Cuando necesitás operaciones <strong>deshacer/rehacer</strong> o
+              mantener un historial.
+            </li>
+            <li>
+              Cuando querés <strong>desacoplar</strong> el objeto que envía la
+              solicitud del que la ejecuta.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Componentes principales 🧩</h3>
+          <ul>
+            <li>
+              <strong>Command</strong>: Interfaz con método
+              <code>execute()</code>.
+            </li>
+            <li>
+              <strong>ConcreteCommand</strong>: Implementa
+              <code>execute()</code> y llama al receptor.
+            </li>
+            <li><strong>Receiver</strong>: Hace el trabajo real.</li>
+            <li><strong>Invoker</strong>: Llama al comando.</li>
+            <li><strong>Client</strong>: Configura todo.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Receiver: Light</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class Light {
+  on() {
+    console.log("💡 Luz encendida");
+  }
+  off() {
+    console.log("🌑 Luz apagada");
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>Interfaz Command</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class Command {
+  execute() {}
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>LightOnCommand</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class LightOnCommand extends Command {
+  constructor(light) {
+    super();
+    this.light = light;
+  }
+  execute() {
+    this.light.on();
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>LightOffCommand</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class LightOffCommand extends Command {
+  constructor(light) {
+    super();
+    this.light = light;
+  }
+  execute() {
+    this.light.off();
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>Invoker: RemoteControl</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class RemoteControl {
+  setCommand(command) {
+    this.command = command;
+  }
+  pressButton() {
+    this.command.execute();
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>Uso desde el cliente</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+const light = new Light();
+const onCommand = new LightOnCommand(light);
+const offCommand = new LightOffCommand(light);
+
+const remote = new RemoteControl();
+
+remote.setCommand(onCommand);
+remote.pressButton(); // 💡 Luz encendida
+
+remote.setCommand(offCommand);
+remote.pressButton(); // 🌑 Luz apagada
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>✅ Ventajas</h3>
+          <ul>
+            <li>Desacopla el invocador del receptor.</li>
+            <li>Permite <strong>guardar historial</strong> de comandos.</li>
+            <li>
+              Soporta operaciones <strong>undo</strong> y <strong>redo</strong>.
+            </li>
+            <li>Permite <strong>encolar comandos</strong>.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>⚠️ Desventajas</h3>
+          <ul>
+            <li>Aumenta la <strong>cantidad de clases</strong>.</li>
+            <li>
+              Puede ser excesivo si solo se necesita una simple llamada a
+              método.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>🆚 Comparaciones con otros patrones</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Patrón</th>
+                <th>¿Qué encapsula?</th>
+                <th>¿Cuándo usarlo?</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Command</strong></td>
+                <td>Una operación</td>
+                <td>Deshacer, historial, ejecución tardía</td>
+              </tr>
+              <tr>
+                <td><strong>Strategy</strong></td>
+                <td>Un algoritmo completo</td>
+                <td>Variar comportamiento</td>
+              </tr>
+              <tr>
+                <td><strong>Observer</strong></td>
+                <td>Reacción a eventos</td>
+                <td>Notificaciones múltiples</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section>
+          <h1 style="color: #7fffd4; font-size: 2em">👀 Observer</h1>
+        </section>
+
+        <section>
+          <h3>¿Qué es?</h3>
+          <p>
+            El patrón <strong>Observer</strong> define una dependencia
+            uno-a-muchos entre objetos, de modo que cuando un objeto cambia de
+            estado, todos sus dependientes son notificados automáticamente.
+          </p>
+        </section>
+
+        <section>
+          <h3>¿Cuándo usarlo? 🧠</h3>
+          <ul>
+            <li>
+              Cuando múltiples objetos deben reaccionar a un cambio en otro
+              objeto.
+            </li>
+            <li>
+              Cuando querés <strong>desacoplar</strong> al sujeto de sus
+              observadores.
+            </li>
+            <li>
+              Ideal para sistemas de
+              <strong>eventos, UIs, modelos de datos</strong>, etc.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Componentes principales 🧩</h3>
+          <ul>
+            <li>
+              <strong>Subject</strong>: Mantiene una lista de observadores y los
+              notifica.
+            </li>
+            <li>
+              <strong>Observer</strong>: Interfaz con el método
+              <code>update()</code>.
+            </li>
+            <li>
+              <strong>ConcreteObserver</strong>: Implementa
+              <code>update()</code> y reacciona al cambio.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Subject</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class Subject {
+  constructor() {
+    this.observers = [];
+  }
+
+  subscribe(observer) {
+    this.observers.push(observer);
+  }
+
+  unsubscribe(observer) {
+    this.observers = this.observers.filter(o => o !== observer);
+  }
+
+  notify(data) {
+    this.observers.forEach(observer => observer.update(data));
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>Observer</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class Observer {
+  update(data) {
+    // debe ser implementado por los observadores concretos
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>ConcreteObserver</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class LoggerObserver extends Observer {
+  update(data) {
+    console.log("📝 Log recibido:", data);
+  }
+}
+
+class AlertObserver extends Observer {
+  update(data) {
+    alert("🔔 Nueva alerta: " + data);
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>Uso desde el cliente</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+const subject = new Subject();
+const logger = new LoggerObserver();
+const alerter = new AlertObserver();
+
+subject.subscribe(logger);
+subject.subscribe(alerter);
+
+subject.notify("Temperatura crítica");
+//Resultado esperado: 
+📝 Log recibido: Temperatura crítica
+🔔 Nueva alerta: Temperatura crítica
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>✅ Ventajas</h3>
+          <ul>
+            <li>Desacopla al sujeto de los observadores.</li>
+            <li>Permite agregar nuevos observadores en tiempo de ejecución.</li>
+            <li>Ideal para sistemas de notificación y eventos.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>⚠️ Desventajas</h3>
+          <ul>
+            <li>Puede ser difícil de depurar si hay muchos observadores.</li>
+            <li>Orden de notificación no está garantizado.</li>
+            <li>
+              Los observadores pueden afectar el rendimiento si realizan tareas
+              pesadas.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h1 style="color: #7fffd4; font-size: 2em">🧩 Mediator</h1>
+        </section>
+
+        <section>
+          <h3>¿Qué es?</h3>
+          <p>
+            El patrón <strong>Mediator</strong> centraliza la comunicación entre
+            varios objetos, reduciendo el acoplamiento entre ellos. En lugar de
+            que los objetos se referencien entre sí, lo hacen a través de un
+            mediador.
+          </p>
+        </section>
+
+        <section>
+          <h3>¿Cuándo usarlo? 🧠</h3>
+          <ul>
+            <li>
+              Cuando varios objetos se comunican de forma compleja entre sí.
+            </li>
+            <li>Cuando querés centralizar la lógica de interacción.</li>
+            <li>Ideal en interfaces gráficas, chats, y componentes UI.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Componentes principales 🧩</h3>
+          <ul>
+            <li>
+              <strong>Mediator</strong>: Interfaz para comunicación entre
+              colegas.
+            </li>
+            <li>
+              <strong>ConcreteMediator</strong>: Implementa la lógica de
+              coordinación.
+            </li>
+            <li>
+              <strong>Colleague</strong>: Interfaz base de objetos que
+              interactúan.
+            </li>
+            <li>
+              <strong>ConcreteColleague</strong>: Objeto que se comunica a
+              través del mediador.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Colleague (interfaz base)</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class Colleague {
+  constructor(mediator) {
+    this.mediator = mediator;
+  }
+  send(message) {}
+  receive(message) {}
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>ConcreteColleague</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class Button extends Colleague {
+  constructor(mediator) {
+    super(mediator);
+  }
+  click() {
+    console.log("🔘 Botón clickeado");
+    this.mediator.notify(this, "click");
+  }
+  receive(message) {
+    console.log("Botón recibió:", message);
+  }
+}
+
+class TextBox extends Colleague {
+  constructor(mediator) {
+    super(mediator);
+  }
+  setText(text) {
+    console.log("📥 TextBox actualizado:", text);
+  }
+  receive(message) {
+    this.setText(message);
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Mediator</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+// Mediador
+class Mediator {
+  notify(sender, event) {
+    throw new Error("Debe implementarse en subclase");
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>ConcreteMediator</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class FormMediator extends Mediator {
+  constructor() {
+    this.button = null;
+    this.textBox = null;
+  }
+
+  registerButton(button) {
+    this.button = button;
+  }
+
+  registerTextBox(textBox) {
+    this.textBox = textBox;
+  }
+
+  notify(sender, event) {
+    if (sender === this.button && event === "click") {
+      this.textBox.receive("Formulario enviado");
+    }
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Uso desde el cliente</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+const mediator = new FormMediator();
+
+const button = new Button(mediator);
+const textBox = new TextBox(mediator);
+
+mediator.registerButton(button);
+mediator.registerTextBox(textBox);
+
+button.click();
+//Resultado Esperado:
+🔘 Botón clickeado
+📥 TextBox actualizado: Formulario enviado
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>✅ Ventajas</h3>
+          <ul>
+            <li>Reduce dependencias entre componentes.</li>
+            <li>Centraliza la lógica de interacción.</li>
+            <li>Facilita mantenimiento y pruebas.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>⚠️ Desventajas</h3>
+          <ul>
+            <li>Puede volverse un <strong>objeto muy complejo</strong>.</li>
+            <li>Añade una capa de indirección.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h1 style="color: #7fffd4; font-size: 2em">🧠 Memento</h1>
+        </section>
+
+        <section>
+          <h3>¿Qué es?</h3>
+          <p>
+            El patrón <strong>Memento</strong> permite capturar y almacenar el
+            estado interno de un objeto sin violar el encapsulamiento, de modo
+            que el objeto pueda volver a ese estado más adelante.
+          </p>
+        </section>
+
+        <section>
+          <h3>¿Cuándo usarlo? 🧠</h3>
+          <ul>
+            <li>
+              Cuando necesitás implementar <strong>deshacer (undo)</strong>.
+            </li>
+            <li>
+              Cuando querés <strong>preservar el estado interno</strong> de un
+              objeto sin exponer su estructura.
+            </li>
+            <li>
+              Cuando trabajás con editores, juegos, formularios complejos, etc.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Componentes principales 🧩</h3>
+          <ul>
+            <li>
+              <strong>Originator</strong>: El objeto cuyo estado queremos
+              guardar.
+            </li>
+            <li>
+              <strong>Memento</strong>: Objeto que almacena el estado del
+              originador.
+            </li>
+            <li>
+              <strong>Caretaker</strong>: Responsable de guardar y restaurar los
+              mementos.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Originator</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class Editor {
+  constructor() {
+    this.content = "";
+  }
+
+  write(text) {
+    this.content += text;
+  }
+
+  save() {
+    return new Memento(this.content);
+  }
+
+  restore(memento) {
+    this.content = memento.getState();
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Memento</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class Memento {
+  constructor(state) {
+    this.state = state;
+  }
+
+  getState() {
+    return this.state;
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Caretaker</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class History {
+  constructor() {
+    this.stack = [];
+  }
+
+  push(memento) {
+    this.stack.push(memento);
+  }
+
+  pop() {
+    return this.stack.pop();
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Uso desde el cliente</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+const editor = new Editor();
+const history = new History();
+
+editor.write("Hola ");
+history.push(editor.save());
+
+editor.write("Mundo!");
+console.log(editor.content); // Hola Mundo!
+
+editor.restore(history.pop());
+console.log(editor.content); // Hola
+//Resultado Esperado:
+Hola Mundo!
+Hola
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>✅ Ventajas</h3>
+          <ul>
+            <li>No rompe el <strong>encapsulamiento</strong>.</li>
+            <li>Permite implementar <strong>deshacer</strong> fácilmente.</li>
+            <li>Muy útil para editores de texto, juegos, formularios, etc.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>⚠️ Desventajas</h3>
+          <ul>
+            <li>
+              Puede consumir mucha <strong>memoria</strong> si se guardan muchos
+              estados.
+            </li>
+            <li>
+              El <strong>caretaker</strong> debe manejar la gestión del ciclo de
+              vida de los mementos.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h1 style="color: #7fffd4; font-size: 2em">🔁 State</h1>
+        </section>
+
+        <section>
+          <h3>¿Qué es?</h3>
+          <p>
+            El patrón <strong>State</strong> permite a un objeto cambiar su
+            comportamiento cuando cambia su estado interno. El objeto parecerá
+            cambiar su clase.
+          </p>
+        </section>
+
+        <section>
+          <h3>¿Cuándo usarlo? 🧠</h3>
+          <ul>
+            <li>
+              Cuando un objeto debe cambiar su comportamiento dependiendo de su
+              estado.
+            </li>
+            <li>
+              Cuando hay muchas estructuras <code>if/else</code> o
+              <code>switch</code> basadas en estados.
+            </li>
+            <li>
+              Cuando un objeto debe cambiar su comportamiento de manera dinámica
+              en tiempo de ejecución, en función de ciertas condiciones.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Componentes principales 🧩</h3>
+          <ul>
+            <li>
+              <strong>Context</strong>: Mantiene una referencia al estado
+              actual.
+            </li>
+            <li>
+              <strong>State</strong>: Interfaz común para todos los estados.
+            </li>
+            <li>
+              <strong>ConcreteState</strong>: Implementaciones concretas del
+              comportamiento en cada estado.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>State (interfaz)</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class State {
+  handle(context) {
+    throw new Error("Debe implementarse");
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>ConcreteStates</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class HappyState extends State {
+  handle(context) {
+    console.log("😀 Estoy feliz!");
+    context.setState(new SadState());
+  }
+}
+
+class SadState extends State {
+  handle(context) {
+    console.log("😢 Estoy triste...");
+    context.setState(new HappyState());
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Context</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class Person {
+  constructor() {
+    this.state = new HappyState();
+  }
+
+  setState(state) {
+    this.state = state;
+  }
+
+  react() {
+    this.state.handle(this);
+  }
+}
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>Uso desde el cliente</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+const person = new Person();
+
+person.react(); // 😀 Estoy feliz!
+person.react(); // 😢 Estoy triste...
+person.react(); // 😀 Estoy feliz!
+  </code></pre>
+        </section>
+
+        <section>
+          <h3>✅ Ventajas</h3>
+          <ul>
+            <li>Elimina estructuras de control repetitivas.</li>
+            <li>Encapsula comportamientos específicos de cada estado.</li>
+            <li>Facilita la adición de nuevos estados.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>⚠️ Desventajas</h3>
+          <ul>
+            <li>
+              Aumenta la cantidad de clases, dado que obliga que cada estado
+              posible sea una clase.
+            </li>
+            <li>Puede ser innecesario si solo hay pocos estados simples.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h1 style="color: #7fffd4; font-size: 2em">🧮 Strategy</h1>
+        </section>
+
+        <section>
+          <h3>¿Qué es?</h3>
+          <p>
+            El patrón <strong>Strategy</strong> define una familia de
+            algoritmos, los encapsula y los hace intercambiables. Permite que el
+            algoritmo varíe independientemente del cliente que lo utiliza.
+          </p>
+        </section>
+
+        <section>
+          <h3>¿Cuándo usarlo? 🧠</h3>
+          <ul>
+            <li>
+              Cuando querés seleccionar un algoritmo en tiempo de ejecución.
+            </li>
+            <li>Cuando múltiples clases difieren solo en su comportamiento.</li>
+            <li>
+              Cuando tenés muchas estructuras <code>if/else</code> con
+              diferentes estrategias.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Componentes principales 🧩</h3>
+          <ul>
+            <li>
+              <strong>Strategy</strong>: Interfaz común para todas las
+              estrategias.
+            </li>
+            <li>
+              <strong>ConcreteStrategy</strong>: Implementaciones concretas de
+              la estrategia.
+            </li>
+            <li>
+              <strong>Context</strong>: Utiliza una estrategia para ejecutar el
+              algoritmo.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Strategy (interfaz)</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class PaymentStrategy {
+  pay(amount) {
+    throw new Error("Debe implementarse");
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>ConcreteStrategies</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class CreditCardPayment extends PaymentStrategy {
+  pay(amount) {
+    console.log(`💳 Pagando $${amount} con tarjeta de crédito`);
+  }
+}
+
+class PayPalPayment extends PaymentStrategy {
+  pay(amount) {
+    console.log(`📧 Pagando $${amount} con PayPal`);
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>Context</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class PaymentContext {
+  constructor(strategy) {
+    this.strategy = strategy;
+  }
+
+  setStrategy(strategy) {
+    this.strategy = strategy;
+  }
+
+  execute(amount) {
+    this.strategy.pay(amount);
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>Uso desde el cliente</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+const payment1 = new PaymentContext(new CreditCardPayment());
+payment1.execute(100); // 💳 Pagando $100 con tarjeta de crédito
+
+const payment2 = new PaymentContext(new PayPalPayment());
+payment2.execute(200); // 📧 Pagando $200 con PayPal
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>Otro ejemplo: Estrategias para área de triángulo</h3>
+          <p>
+            Se encapsulan dos algoritmos distintos para calcular el área de un
+            triángulo.
+          </p>
+        </section>
+
+        <section>
+          <h3>Interfaz AreaStrategy</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class AreaStrategy {
+  area() {
+    throw new Error("Debe implementarse");
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>ConcreteStrategy: Base x Altura / 2</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class BaseHeightArea extends AreaStrategy {
+  area(base, height) {
+    return (base * height) / 2;
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>ConcreteStrategy: Fórmula de Herón</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class HeronArea extends AreaStrategy {
+  area(a, b, c) {
+    const s = (a + b + c) / 2;
+    return Math.sqrt(s * (s - a) * (s - b) * (s - c));
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>Context: TriangleAreaContext</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class TriangleAreaContext {
+  constructor(strategy) {
+    this.strategy = strategy;
+  }
+  setStrategy(strategy) {
+    this.strategy = strategy;
+  }
+  area(...args) {
+    return this.strategy.area(...args);
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>Uso desde el cliente</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+const triangle1 = new TriangleAreaContext(new BaseHeightArea());
+console.log(triangle1.area(6, 4)); // 12
+
+const triangle2 = new TriangleAreaContext(new HeronArea());
+console.log(triangle2.area(5, 5, 6)); // 12
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>✅ Ventajas</h3>
+          <ul>
+            <li>Permite cambiar algoritmos en tiempo de ejecución.</li>
+            <li>Elimina estructuras de control complejas.</li>
+            <li>Fácil de extender con nuevas estrategias.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>⚠️ Desventajas</h3>
+          <ul>
+            <li>Aumenta el número de clases.</li>
+            <li>El cliente debe conocer las diferencias entre estrategias.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h1 style="color: #7fffd4; font-size: 2em">🧭 Visitor</h1>
+        </section>
+
+        <section>
+          <h3>¿Qué es?</h3>
+          <p>
+            El patrón <strong>Visitor</strong> permite agregar nuevas
+            operaciones a estructuras de objetos existentes sin modificar sus
+            clases.
+          </p>
+        </section>
+
+        <section>
+          <h3>¿Cuándo usarlo? 🧠</h3>
+          <ul>
+            <li>
+              Cuando necesitás realizar operaciones sobre una estructura de
+              objetos compleja.
+            </li>
+            <li>Cuando querés mantener separado el algoritmo del objeto.</li>
+            <li>
+              Cuando agregar una operación directamente a una clase rompería el
+              principio de responsabilidad única.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Componentes principales 🧩</h3>
+          <ul>
+            <li>
+              <strong>Visitor</strong>: Interfaz que declara una operación por
+              cada tipo de elemento.
+            </li>
+            <li>
+              <strong>ConcreteVisitor</strong>: Implementa las operaciones.
+            </li>
+            <li>
+              <strong>Element</strong>: Interfaz con un método
+              <code>accept(visitor)</code>.
+            </li>
+            <li>
+              <strong>ConcreteElement</strong>: Implementa <code>accept</code> y
+              llama a <code>visitor.visit(this)</code>.
+            </li>
+            <li>
+              <strong>ObjectStructure</strong>: Colección de elementos a los que
+              se aplica el visitante.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Visitor y Element (interfaces)</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class Visitor {
+  visitCircle(circle) {}
+  visitRectangle(rectangle) {}
+}
+
+class Shape {
+  accept(visitor) {
+    throw new Error("Debe implementarse");
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>ConcreteElements</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class Circle extends Shape {
+  constructor(radius) {
+    super();
+    this.radius = radius;
+  }
+  accept(visitor) {
+    visitor.visitCircle(this);
+  }
+}
+
+class Rectangle extends Shape {
+  constructor(width, height) {
+    super();
+    this.width = width;
+    this.height = height;
+  }
+  accept(visitor) {
+    visitor.visitRectangle(this);
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>ConcreteVisitor</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class AreaCalculator extends Visitor {
+  visitCircle(circle) {
+    const area = Math.PI * circle.radius ** 2;
+    console.log(`🔵 Área del círculo: ${area.toFixed(2)}`);
+  }
+  visitRectangle(rectangle) {
+    const area = rectangle.width * rectangle.height;
+    console.log(`🟦 Área del rectángulo: ${area}`);
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>ObjectStructure</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+class ObjectStructure {
+  constructor() {
+    this.elements = [];
+  }
+
+  addElement(element) {
+    this.elements.push(element);
+  }
+
+  accept(visitor) {
+    for (const element of this.elements) {
+      element.accept(visitor);
+    }
+  }
+}
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>Uso desde el cliente</h3>
+          <pre><code class="language-js" data-trim data-noescape>
+const structure = new ObjectStructure();
+structure.addElement(new Circle(5));
+structure.addElement(new Rectangle(4, 6));
+
+const areaVisitor = new AreaCalculator();
+structure.accept(areaVisitor);
+//Resultado Esperado:
+🔵 Área del círculo: 78.54
+🟦 Área del rectángulo: 24
+        </code></pre>
+        </section>
+
+        <section>
+          <h3>✅ Ventajas</h3>
+          <ul>
+            <li>
+              Permite agregar operaciones sin modificar las clases existentes.
+            </li>
+            <li>Fomenta el principio de responsabilidad única.</li>
+            <li>Facilita el mantenimiento de algoritmos complejos.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>⚠️ Desventajas</h3>
+          <ul>
+            <li>
+              Añadir nuevos elementos requiere modificar todos los visitantes
+              existentes.
+            </li>
+            <li>
+              Puede romper el principio abierto/cerrado si se cambia con
+              frecuencia la jerarquía de clases.
+            </li>
+          </ul>
+        </section>
       </div>
     </div>
 
