@@ -19,6 +19,7 @@
 
   /* acentos por categoría */
   --c-intro: #5eead4; /* teal   */
+  --c-anti: #fb7185; /* rosa/rojo */
   --c-creational: #fbbf24; /* ámbar  */
   --c-structural: #38bdf8; /* celeste*/
   --c-persistence: #4ade80; /* verde  */
@@ -33,6 +34,7 @@
 
 /* ---- color de acento según la categoría de la sección ---- */
 .reveal section[data-cat="intro"] { --cat: var(--c-intro); }
+.reveal section[data-cat="anti"] { --cat: var(--c-anti); }
 .reveal section[data-cat="creational"] { --cat: var(--c-creational); }
 .reveal section[data-cat="structural"] { --cat: var(--c-structural); }
 .reveal section[data-cat="persistence"] { --cat: var(--c-persistence); }

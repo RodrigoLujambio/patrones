@@ -57,6 +57,217 @@
         </section>
 
         <!-- ====================================================================
+             ANTIPATRONES
+             ==================================================================== -->
+        <section data-cat="anti">
+          <div class="cat-divider">
+            <span class="cat-kicker">Antes de empezar</span>
+            <h1>⛔ Antipatrones</h1>
+            <div class="cat-rule"></div>
+            <p class="cat-list">Blob · Lava Flow · Golden Hammer · Spaghetti · Cut&amp;Paste · TDD</p>
+          </div>
+        </section>
+
+        <section data-cat="anti">
+          <h3>¿Qué es un antipatrón?</h3>
+          <p class="lead">
+            Una solución <strong>habitual</strong> a un problema recurrente que
+            <strong>parece beneficiosa a corto plazo</strong>, pero que produce
+            resultados <strong>contraproducentes</strong> a largo plazo.
+          </p>
+          <div class="callout">
+            ⚠️ Lo que hace a una práctica un antipatrón no es solo ser una mala
+            solución, sino <strong>parecer buena en la superficie</strong> y traer
+            problemas en el futuro. Suelen surgir de experiencia limitada,
+            desconocimiento de buenas prácticas o plazos apresurados.
+          </div>
+        </section>
+
+        <section data-cat="anti">
+          <h3>¿Cómo se reconocen?</h3>
+          <div class="cards two">
+            <div class="card"><h4>🐢 Ineficiencia</h4><p>Hacen el software más lento o le hacen consumir más recursos de los necesarios.</p></div>
+            <div class="card"><h4>🔧 Difícil de mantener</h4><p>Vuelven el código más difícil de entender, modificar o extender.</p></div>
+            <div class="card"><h4>🐛 Introducen defectos</h4><p>Hacen más probable la aparición de errores.</p></div>
+            <div class="card"><h4>🌀 Complejidad innecesaria</h4><p>Agregan complejidad al diseño sin un beneficio claro.</p></div>
+          </div>
+        </section>
+
+        <!-- The Blob -->
+        <section data-cat="anti">
+          <h3>🫧 The Blob</h3>
+          <p class="lead">
+            Una sola clase concentra <strong>casi todas las responsabilidades</strong>,
+            mientras las demás son meros contenedores de datos: programación
+            procedural disfrazada de orientación a objetos.
+          </p>
+          <div class="pros-cons">
+            <div class="panel cons">
+              <h4>🚩 Cómo reconocerlo</h4>
+              <ul>
+                <li>Una clase con muchísimos atributos y métodos.</li>
+                <li>Baja cohesión entre sus atributos y operaciones.</li>
+                <li>Las demás clases solo guardan datos, con poca o nula lógica.</li>
+              </ul>
+            </div>
+            <div class="panel pros">
+              <h4>🛠️ Cómo evitarlo</h4>
+              <ul>
+                <li>Dividir la clase gigante en clases pequeñas y especializadas.</li>
+                <li>Redistribuir responsabilidades aplicando SRP.</li>
+                <li>Que cada clase tenga un propósito claro y único.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Lava Flow -->
+        <section data-cat="anti">
+          <h3>🌋 Lava Flow</h3>
+          <p class="lead">
+            Piezas de código que <strong>quedan en el sistema aunque ya no son
+            útiles</strong> y que se vuelven difíciles de eliminar (código que “se
+            endurece” como la lava).
+          </p>
+          <div class="pros-cons">
+            <div class="panel cons">
+              <h4>🚩 Cómo reconocerlo</h4>
+              <ul>
+                <li>Código obsoleto que sigue ahí “por las dudas”.</li>
+                <li>Código que ya nadie entiende ni documenta.</li>
+                <li>Código que se evita tocar por miedo a romper algo.</li>
+              </ul>
+            </div>
+            <div class="panel pros">
+              <h4>🛠️ Cómo evitarlo</h4>
+              <ul>
+                <li>Documentar bien el código y sus cambios.</li>
+                <li>Hacer revisiones de código periódicas.</li>
+                <li>Refactorizar y eliminar código muerto tras pruebas rigurosas.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Golden Hammer -->
+        <section data-cat="anti">
+          <h3>🔨 Golden Hammer</h3>
+          <p class="lead">
+            “Si solo tengo un martillo, todo parece un clavo”: depender demasiado
+            de una <strong>herramienta o tecnología familiar</strong>, a costa de
+            mejores alternativas.
+          </p>
+          <div class="pros-cons">
+            <div class="panel cons">
+              <h4>🚩 Cómo reconocerlo</h4>
+              <ul>
+                <li>Sobreutilización de una herramienta o tecnología.</li>
+                <li>Reticencia a considerar o adoptar alternativas.</li>
+                <li>Creer que la herramienta familiar resuelve todo.</li>
+              </ul>
+            </div>
+            <div class="panel pros">
+              <h4>🛠️ Cómo evitarlo</h4>
+              <ul>
+                <li>Capacitar al equipo en distintas herramientas y tecnologías.</li>
+                <li>Evaluar opciones objetivamente antes de elegir.</li>
+                <li>Fomentar la experimentación y el aprendizaje continuo.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Spaghetti Code -->
+        <section data-cat="anti">
+          <h3>🍝 Spaghetti Code</h3>
+          <p class="lead">
+            Código con una estructura <strong>enredada y compleja</strong> —como un
+            plato de espaguetis— difícil de leer, mantener y depurar.
+          </p>
+          <div class="pros-cons">
+            <div class="panel cons">
+              <h4>🚩 Cómo reconocerlo</h4>
+              <ul>
+                <li>Falta de estructura y organización.</li>
+                <li>Flujo de control difícil de seguir.</li>
+                <li>Ausencia de modularidad y encapsulación.</li>
+              </ul>
+            </div>
+            <div class="panel pros">
+              <h4>🛠️ Cómo evitarlo</h4>
+              <ul>
+                <li>Diseñar la arquitectura antes de escribir el código.</li>
+                <li>Seguir buenas prácticas y hacer revisiones de código.</li>
+                <li>Dividir en funciones y clases pequeñas y coherentes.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Cut-and-Paste Programming -->
+        <section data-cat="anti">
+          <h3>📋 Cut-and-Paste Programming</h3>
+          <p class="lead">
+            Copiar y pegar bloques de código por toda la aplicación
+            <strong>en lugar de crear funciones o módulos reutilizables</strong>.
+          </p>
+          <div class="pros-cons">
+            <div class="panel cons">
+              <h4>🚩 Cómo reconocerlo</h4>
+              <ul>
+                <li>Código duplicado por todos lados.</li>
+                <li>Falta de modularidad y abstracción.</li>
+                <li>Un cambio hay que replicarlo en muchos lugares.</li>
+              </ul>
+            </div>
+            <div class="panel pros">
+              <h4>🛠️ Cómo evitarlo</h4>
+              <ul>
+                <li>Pensar en modularidad y reutilización desde el inicio.</li>
+                <li>Extraer funciones y clases para la lógica común.</li>
+                <li>Identificar y eliminar la duplicación (principio DRY).</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tester Driven Development -->
+        <section data-cat="anti">
+          <h3>🐛 Tester Driven Development</h3>
+          <p class="lead">
+            También llamado <em>“Bug Driven Development”</em>: que las
+            <strong>pruebas y los reportes de errores dirijan el desarrollo</strong>,
+            en lugar de las necesidades del usuario y los requerimientos.
+          </p>
+          <div class="pros-cons">
+            <div class="panel cons">
+              <h4>🚩 Cuándo ocurre</h4>
+              <ul>
+                <li>Las pruebas empiezan demasiado pronto.</li>
+                <li>Los requerimientos están incompletos.</li>
+                <li>Testers/desarrolladores inexpertos o gestión deficiente.</li>
+              </ul>
+            </div>
+            <div class="panel pros">
+              <h4>🛠️ Cómo evitarlo</h4>
+              <ul>
+                <li>Empezar a probar en el momento adecuado.</li>
+                <li>Definir requerimientos completos y claros.</li>
+                <li>Mantener el foco en el valor para el usuario.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section data-cat="anti">
+          <p class="lead" style="text-align: center">
+            🧭 Conocer los antipatrones nos dice <strong>qué evitar</strong>.
+            Los <strong>patrones de diseño</strong> nos dan el camino contrario:
+            soluciones probadas a problemas recurrentes.
+          </p>
+        </section>
+
+        <!-- ====================================================================
              INTRODUCCIÓN — GANG OF FOUR
              ==================================================================== -->
         <section data-cat="intro">
