@@ -1104,6 +1104,92 @@ printer.printMessage("Hola mundo"); // >>> Hola mundo
           </div>
         </section>
 
+        <section data-cat="structural">
+          <h3>Ejemplos reales 🌍</h3>
+          <div class="cards two" style="align-items: start">
+            <div class="card">
+              <h4>🛒 Shopify · pasarelas de pago</h4>
+              <p>Integra múltiples pasarelas con interfaces distintas detrás de una interfaz común.</p>
+              <table style="font-size: 0.82em; margin-top: 0.4em">
+                <thead><tr><th>Pasarela</th><th>¿Adapter?</th></tr></thead>
+                <tbody>
+                  <tr><td>Shopify Payments</td><td>No aplica</td></tr>
+                  <tr><td>Amazon Pay</td><td>Sí</td></tr>
+                  <tr><td>MercadoPago</td><td>Sí</td></tr>
+                  <tr><td>PayPal</td><td>Sí</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card">
+              <h4>📺 Disney+ · asistentes de voz</h4>
+              <p>No tiene reconocimiento de voz nativo: adapta los distintos asistentes de la industria.</p>
+              <table style="font-size: 0.82em; margin-top: 0.4em">
+                <thead><tr><th>Plataforma</th><th>Asistente</th></tr></thead>
+                <tbody>
+                  <tr><td>Amazon Fire TV</td><td>Alexa</td></tr>
+                  <tr><td>Apple TV</td><td>Siri</td></tr>
+                  <tr><td>Google Chromecast</td><td>Google Assistant</td></tr>
+                  <tr><td>Roku</td><td>Roku voice</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Ejemplo aplicado — PayPalAdapter 💳</h3>
+          <div class="uml">
+            <svg viewBox="0 0 880 430" role="img" aria-label="Diagrama UML del patrón Adapter con PayPal">
+              <!-- Program (cliente) -->
+              <g>
+                <rect class="box" x="40" y="60" width="180" height="70" rx="9" />
+                <rect class="box-bar" x="40" y="60" width="180" height="30" rx="9" />
+                <rect class="box-bar" x="40" y="84" width="180" height="6" />
+                <text class="name" x="130" y="80" style="font-size: 13px">Program</text>
+                <text class="member" x="56" y="112">+ Main()</text>
+              </g>
+              <!-- IPago (interface / Target) -->
+              <g class="iface">
+                <rect class="box" x="560" y="60" width="280" height="70" rx="9" />
+                <rect class="box-bar" x="560" y="60" width="280" height="30" rx="9" />
+                <rect class="box-bar" x="560" y="84" width="280" height="6" />
+                <text class="stereo" x="700" y="74">«interface»</text>
+                <text class="name" x="700" y="86" style="font-size: 13px">IPago</text>
+                <text class="member" x="576" y="112">+ Pagar(monto: decimal)</text>
+              </g>
+              <!-- PayPalAdapter -->
+              <g>
+                <rect class="box" x="540" y="220" width="300" height="86" rx="9" />
+                <rect class="box-bar" x="540" y="220" width="300" height="30" rx="9" />
+                <rect class="box-bar" x="540" y="244" width="300" height="6" />
+                <text class="name" x="690" y="240" style="font-size: 13px">PayPalAdapter</text>
+                <text class="member" x="556" y="268">- paypal: PayPalService</text>
+                <line class="sep" x1="540" y1="278" x2="840" y2="278" />
+                <text class="member" x="556" y="298">+ Pagar(monto: decimal)</text>
+              </g>
+              <!-- PayPalService (Adaptee) -->
+              <g>
+                <rect class="box" x="220" y="340" width="420" height="72" rx="9" />
+                <rect class="box-bar" x="220" y="340" width="420" height="30" rx="9" />
+                <rect class="box-bar" x="220" y="364" width="420" height="6" />
+                <text class="name" x="430" y="360" style="font-size: 13px">PayPalService</text>
+                <text class="member" x="236" y="392">+ SendPayment(moneda: string, cantidad: decimal)</text>
+              </g>
+              <!-- Program ..> IPago (usa) -->
+              <path class="edge dash" d="M220 95 L560 95" marker-end="url(#arrow)" />
+              <!-- PayPalAdapter ..|> IPago (realización) -->
+              <path class="edge dash" d="M690 220 L690 130" marker-end="url(#tri)" />
+              <!-- PayPalAdapter usa PayPalService (composicion) -->
+              <path class="edge" d="M560 306 L460 340" marker-end="url(#arrow)" />
+              <!-- Program usa PayPalService -->
+              <path class="edge" d="M130 130 L130 376 L220 376" marker-end="url(#arrow)" />
+              <!-- nota -->
+              <text class="note-txt" x="40" y="170">El cliente conoce solo IPago;</text>
+              <text class="note-txt" x="40" y="186">el adapter traduce a SendPayment().</text>
+            </svg>
+          </div>
+        </section>
+
         <!-- PATRON: Bridge -->
         <section data-cat="structural">
           <div class="pattern-title">
@@ -1218,6 +1304,46 @@ svgCircle.draw();    // <circle cx='0' cy='0' r='10' />
           </div>
         </section>
 
+        <section data-cat="structural">
+          <h3>Ejemplos reales 🌍</h3>
+          <div class="cards two" style="align-items: start">
+            <div class="card">
+              <h4>📱 Google Pay</h4>
+              <p>Billetera digital que paga con una tarjeta sin entregarla físicamente.</p>
+              <p style="margin-top: 0.4em">
+                <strong>Abstracción:</strong> la forma de pagar (app móvil, POS, smartwatch).<br>
+                <strong>Implementación:</strong> el medio de pago real (Visa, MasterCard).
+              </p>
+            </div>
+            <div class="card">
+              <h4>✈️ LATAM Airlines</h4>
+              <p>La experiencia de reserva es única, pero la lógica varía por país.</p>
+              <p style="margin-top: 0.4em">
+                <strong>Abstracción:</strong> reserva general (búsqueda, selección, check-in).<br>
+                <strong>Implementación:</strong> lógica por país (monedas, impuestos, medios de pago, validación de identidad).
+              </p>
+            </div>
+          </div>
+          <div class="callout" style="margin-top: 0.7em">
+            🧠 La <strong>Abstracción</strong> es una capa de control de alto nivel que
+            <em>delega</em> el trabajo real a la capa de <strong>implementación</strong>.
+          </div>
+        </section>
+
+        <section data-cat="structural">
+          <h3>🆚 Adapter vs. Bridge</h3>
+          <table>
+            <thead>
+              <tr><th></th><th>🔌 Adapter</th><th>🌉 Bridge</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Propósito</strong></td><td>Hacer que dos interfaces incompatibles trabajen juntas</td><td>Desacoplar una abstracción de su implementación</td></tr>
+              <tr><td><strong>Intención</strong></td><td>Resolver incompatibilidades de interfaces que <em>ya existen</em></td><td>Se planifica <em>de antemano</em>, al diseñar</td></tr>
+              <tr><td><strong>Estructura</strong></td><td>Envuelve la clase adaptada; sin separación abstracción/implementación</td><td>Dos jerarquías separadas que evolucionan en paralelo</td></tr>
+            </tbody>
+          </table>
+        </section>
+
         <!-- PATRON: Decorator -->
         <section data-cat="structural">
           <div class="pattern-title">
@@ -1330,6 +1456,47 @@ notifier.send("¡Hola mundo!");
           </div>
         </section>
 
+        <section data-cat="structural">
+          <h3>Ejemplos reales 🌍</h3>
+          <div class="cards two" style="align-items: start">
+            <div class="card">
+              <h4>☕ Cafetería de la UCU</h4>
+              <p>Agrega ingredientes a una bebida de forma flexible, sin crear una clase por cada combinación posible.</p>
+              <p style="margin-top: 0.4em">
+                <strong>Bebida base:</strong> café americano, latte.<br>
+                <strong>Decoradores:</strong> leche, crema, jarabe de vainilla, canela, chocolate.
+              </p>
+            </div>
+            <div class="card">
+              <h4>🔐 Sistema de autenticación</h4>
+              <p>Suma controles sobre la autenticación base sin modificarla, respetando OCP.</p>
+              <p style="margin-top: 0.4em">
+                <strong>Componente base:</strong> usuario autenticado.<br>
+                <strong>Decoradores:</strong> doble factor, validación biométrica, captcha, firma digital, revisión de IP geográfica.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Ejemplo aplicado — editor de fotos 🖼️</h3>
+          <p class="lead" style="font-size: 0.78em">
+            Una <code>ImagenOriginal</code> se envuelve en capas apilables:
+            <code>Marco</code>, <code>FiltroSepia</code>, <code>Sticker</code>, <code>Texto</code>…
+          </p>
+          <pre><code class="language-js" data-trim>
+let foto = new ImagenOriginal();
+foto = new Marco(foto);
+foto = new FiltroSepia(foto);
+foto = new Sticker(foto);
+foto = new Texto(foto);
+
+foto.Mostrar();
+// "Imagen original + marco blanco + filtro sepia
+//  + sticker de emoji 😎 + texto: 'Vacaciones 2025'"
+          </code></pre>
+        </section>
+
         <!-- PATRON: Facade -->
         <section data-cat="structural">
           <div class="pattern-title">
@@ -1433,6 +1600,28 @@ homeTheater.watchMovie("Matrix");
           </div>
         </section>
 
+        <section data-cat="structural">
+          <h3>Ejemplos reales 🌍</h3>
+          <div class="cards two" style="align-items: start">
+            <div class="card">
+              <h4>📷 API de cámara de un smartphone</h4>
+              <p>Una <code>CamaraFacade</code> ofrece una interfaz sencilla y oculta la complejidad de cada subsistema.</p>
+              <p style="margin-top: 0.4em">
+                <strong>Facade:</strong> <code>Camera.open()</code><br>
+                <strong>Subsistemas:</strong> enfoque, sensor, estabilización, flash, almacenamiento, permisos.
+              </p>
+            </div>
+            <div class="card">
+              <h4>🛒 Botón “Comprar ahora”</h4>
+              <p>Una sola llamada coordina todos los pasos de la compra.</p>
+              <p style="margin-top: 0.4em">
+                <strong>Facade:</strong> <code>CheckoutFacade.Buy()</code><br>
+                <strong>Subsistemas:</strong> carrito, stock, shipping, impuestos, pasarela de pago, factura, notificación.
+              </p>
+            </div>
+          </div>
+        </section>
+
         <!-- PATRON: Proxy -->
         <section data-cat="structural">
           <div class="pattern-title">
@@ -1523,6 +1712,48 @@ video.play(); // ya cargado → reproduce directamente
             <strong>Decorator</strong> agrega <em>comportamiento</em> ·
             <strong>Adapter</strong> transforma <em>interfaces</em>.
           </div>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Tipos de Proxy 🔀</h3>
+          <div class="cards two">
+            <div class="card"><h4>⏳ Virtual (init. diferida)</h4><p>Difiere la creación de un objeto pesado hasta que se lo necesita de verdad.</p></div>
+            <div class="card"><h4>🛡️ Protección (control de acceso)</h4><p>Solo clientes autorizados pueden usar el objeto de servicio.</p></div>
+            <div class="card"><h4>📝 Registro (logging)</h4><p>Mantiene un historial de las solicitudes al objeto de servicio.</p></div>
+            <div class="card"><h4>🧠 Referencia inteligente</h4><p>Descarta el objeto pesado cuando ya no hay clientes que lo usen.</p></div>
+          </div>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Ejemplo real 🌍 — Netflix / HBO Max / Disney+</h3>
+          <p class="lead" style="font-size: 0.82em">
+            Un <strong>Proxy</strong> actúa como filtro entre el usuario y el contenido:
+            solo permite reproducir un video si el usuario…
+          </p>
+          <ul>
+            <li>está al día con el pago mensual del servicio;</li>
+            <li>tiene permiso para ese contenido según su tipo de suscripción;</li>
+            <li>está usando un dispositivo autorizado.</li>
+          </ul>
+          <div class="callout" style="margin-top: 0.6em">
+            🎬 Combina <strong>control de acceso</strong> (protección) con
+            <strong>inicialización diferida</strong>: el contenido pesado se carga recién al pasar los controles.
+          </div>
+        </section>
+
+        <section data-cat="structural">
+          <h3>🆚 Facade vs. Proxy vs. Decorator</h3>
+          <table>
+            <thead>
+              <tr><th></th><th>🏢 Facade</th><th>🛡️ Proxy</th><th>🎁 Decorator</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Propósito</strong></td><td>Simplificar un uso complejo</td><td>Controlar el acceso</td><td>Añadir funcionalidades</td></tr>
+              <tr><td><strong>¿Oculta complejidad?</strong></td><td>Sí</td><td>Parcialmente</td><td>No</td></tr>
+              <tr><td><strong>Metáfora</strong></td><td>Recepcionista</td><td>Portero</td><td>Envoltura decorativa</td></tr>
+              <tr><td><strong>Ejemplo</strong></td><td>Comprar ahora</td><td>Carga de video</td><td>Cafetería</td></tr>
+            </tbody>
+          </table>
         </section>
 
         <!-- ====================================================================
@@ -1707,6 +1938,25 @@ console.log(repo.getProductById(1)); // Product { id: 1, name: 'Lámpara' }
                 <li>Agrega una capa que puede sobrar en sistemas simples.</li>
               </ul>
             </div>
+          </div>
+        </section>
+
+        <section data-cat="persistence">
+          <h3>🆚 DAO vs. Repository</h3>
+          <table>
+            <thead>
+              <tr><th></th><th>📂 DAO</th><th>📦 Repository</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Propósito</strong></td><td>CRUD directo</td><td>Colecciones y reglas de dominio</td></tr>
+              <tr><td><strong>Nivel</strong></td><td>Inferior, cercano al almacenamiento</td><td>Superior, cercano a los objetos de negocio</td></tr>
+              <tr><td><strong>Foco</strong></td><td>Persistencia técnica (oculta SQL, JDBC, Hibernate)</td><td>El dominio, no los detalles técnicos</td></tr>
+              <tr><td><strong>Metáfora</strong></td><td>Secretario técnico de la base de datos</td><td>Bibliotecario</td></tr>
+            </tbody>
+          </table>
+          <div class="callout" style="margin-top: 0.6em">
+            🔗 Un <strong>Repository</strong> puede apoyarse en uno o varios <strong>DAO</strong>
+            para obtener y persistir datos, presentando una colección lógica del dominio.
           </div>
         </section>
 
