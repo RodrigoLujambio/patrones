@@ -1259,6 +1259,59 @@ printer.printMessage("Hola mundo"); // >>> Hola mundo
         </section>
 
         <section data-cat="structural">
+          <h3>Abstraction y RefinedAbstraction</h3>
+          <pre><code class="language-js" data-trim>
+// Abstraction: mantiene una referencia al implementor
+class Shape {
+  constructor(drawingAPI) { this.drawingAPI = drawingAPI; }
+  draw() { throw new Error("Debe implementarse"); }
+}
+
+class Circle extends Shape {
+  constructor(x, y, radius, drawingAPI) {
+    super(drawingAPI);
+    this.x = x; this.y = y; this.radius = radius;
+  }
+  draw() { this.drawingAPI.drawCircle(this.x, this.y, this.radius); }
+}
+          </code></pre>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Implementor y ConcreteImplementors</h3>
+          <pre><code class="language-js" data-trim>
+// Implementor: interfaz de bajo nivel
+class DrawingAPI {
+  drawCircle(x, y, radius) { throw new Error("Debe implementarse"); }
+}
+
+class CanvasAPI extends DrawingAPI {
+  drawCircle(x, y, radius) {
+    console.log(`Canvas: círculo en (${x}, ${y}) r=${radius}`);
+  }
+}
+
+class SVGAPI extends DrawingAPI {
+  drawCircle(x, y, radius) {
+    console.log(`&lt;circle cx='${x}' cy='${y}' r='${radius}' /&gt;`);
+  }
+}
+          </code></pre>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Uso desde el cliente</h3>
+          <pre><code class="language-js" data-trim>
+// La MISMA forma, con distintas implementaciones de render
+const canvasCircle = new Circle(10, 20, 5, new CanvasAPI());
+canvasCircle.draw(); // Canvas: círculo en (10, 20) r=5
+
+const svgCircle = new Circle(0, 0, 10, new SVGAPI());
+svgCircle.draw();    // <circle cx='0' cy='0' r='10' />
+          </code></pre>
+        </section>
+
+        <section data-cat="structural">
           <h3>Estructura (UML)</h3>
           <div class="uml">
             <svg viewBox="0 0 900 400" role="img" aria-label="Diagrama UML del patrón Bridge">
@@ -1352,60 +1405,7 @@ printer.printMessage("Hola mundo"); // >>> Hola mundo
         </section>
 
         <section data-cat="structural">
-          <h3>Abstraction y RefinedAbstraction</h3>
-          <pre><code class="language-js" data-trim>
-// Abstraction: mantiene una referencia al implementor
-class Shape {
-  constructor(drawingAPI) { this.drawingAPI = drawingAPI; }
-  draw() { throw new Error("Debe implementarse"); }
-}
-
-class Circle extends Shape {
-  constructor(x, y, radius, drawingAPI) {
-    super(drawingAPI);
-    this.x = x; this.y = y; this.radius = radius;
-  }
-  draw() { this.drawingAPI.drawCircle(this.x, this.y, this.radius); }
-}
-          </code></pre>
-        </section>
-
-        <section data-cat="structural">
-          <h3>Implementor y ConcreteImplementors</h3>
-          <pre><code class="language-js" data-trim>
-// Implementor: interfaz de bajo nivel
-class DrawingAPI {
-  drawCircle(x, y, radius) { throw new Error("Debe implementarse"); }
-}
-
-class CanvasAPI extends DrawingAPI {
-  drawCircle(x, y, radius) {
-    console.log(`Canvas: círculo en (${x}, ${y}) r=${radius}`);
-  }
-}
-
-class SVGAPI extends DrawingAPI {
-  drawCircle(x, y, radius) {
-    console.log(`&lt;circle cx='${x}' cy='${y}' r='${radius}' /&gt;`);
-  }
-}
-          </code></pre>
-        </section>
-
-        <section data-cat="structural">
-          <h3>Uso desde el cliente</h3>
-          <pre><code class="language-js" data-trim>
-// La MISMA forma, con distintas implementaciones de render
-const canvasCircle = new Circle(10, 20, 5, new CanvasAPI());
-canvasCircle.draw(); // Canvas: círculo en (10, 20) r=5
-
-const svgCircle = new Circle(0, 0, 10, new SVGAPI());
-svgCircle.draw();    // <circle cx='0' cy='0' r='10' />
-          </code></pre>
-        </section>
-
-        <section data-cat="structural">
-          <h3>✅ Ventajas, ⚠️ Desventajas y 🆚 vs. Adapter</h3>
+          <h3>✅ Ventajas y ⚠️ Desventajas</h3>
           <div class="pros-cons">
             <div class="panel pros">
               <h4>✅ Ventajas</h4>
@@ -1422,10 +1422,6 @@ svgCircle.draw();    // <circle cx='0' cy='0' r='10' />
                 <li>Innecesario si la jerarquía es pequeña.</li>
               </ul>
             </div>
-          </div>
-          <div class="callout" style="margin-top: 0.7em">
-            🆚 <strong>Adapter</strong> hace compatible una interfaz <em>existente</em>;
-            <strong>Bridge</strong> separa dos jerarquías <em>desde el diseño</em>.
           </div>
         </section>
 
@@ -1453,20 +1449,6 @@ svgCircle.draw();    // <circle cx='0' cy='0' r='10' />
             🧠 La <strong>Abstracción</strong> es una capa de control de alto nivel que
             <em>delega</em> el trabajo real a la capa de <strong>implementación</strong>.
           </div>
-        </section>
-
-        <section data-cat="structural">
-          <h3>🆚 Adapter vs. Bridge</h3>
-          <table>
-            <thead>
-              <tr><th></th><th>🔌 Adapter</th><th>🌉 Bridge</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><strong>Propósito</strong></td><td>Hacer que dos interfaces incompatibles trabajen juntas</td><td>Desacoplar una abstracción de su implementación</td></tr>
-              <tr><td><strong>Intención</strong></td><td>Resolver incompatibilidades de interfaces que <em>ya existen</em></td><td>Se planifica <em>de antemano</em>, al diseñar</td></tr>
-              <tr><td><strong>Estructura</strong></td><td>Envuelve la clase adaptada; sin separación abstracción/implementación</td><td>Dos jerarquías separadas que evolucionan en paralelo</td></tr>
-            </tbody>
-          </table>
         </section>
 
         <!-- PATRON: Decorator -->
@@ -1504,6 +1486,118 @@ svgCircle.draw();    // <circle cx='0' cy='0' r='10' />
             <div class="card"><h4>Decorator</h4><p>Implementa la interfaz y referencia al componente que envuelve.</p></div>
             <div class="card"><h4>ConcreteDecorators</h4><p>Decoradores específicos que agregan comportamiento.</p></div>
           </div>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Component y Decorator base</h3>
+          <pre><code class="language-js" data-trim>
+// Component
+class Notifier {
+  send(message) { throw new Error("Debe implementarse"); }
+}
+
+// ConcreteComponent
+class BasicNotifier extends Notifier {
+  send(message) { console.log("Enviando:", message); }
+}
+
+// Decorator base: envuelve a otro Notifier y delega
+class NotifierDecorator extends Notifier {
+  constructor(notifier) { super(); this.notifier = notifier; }
+  send(message) { this.notifier.send(message); }
+}
+          </code></pre>
+        </section>
+
+        <section data-cat="structural">
+          <h3>ConcreteDecorators</h3>
+          <pre><code class="language-js" data-trim>
+class EmojiDecorator extends NotifierDecorator {
+  send(message) { super.send("😀 " + message + " 🎉"); }
+}
+
+class TimestampDecorator extends NotifierDecorator {
+  send(message) {
+    const ts = new Date().toISOString();
+    super.send(`[${ts}] ${message}`);
+  }
+}
+          </code></pre>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Uso desde el cliente</h3>
+          <pre><code class="language-js" data-trim>
+// Composición dinámica: se apilan decoradores
+let notifier = new BasicNotifier();
+notifier = new TimestampDecorator(notifier);
+notifier = new EmojiDecorator(notifier);
+
+notifier.send("¡Hola mundo!");
+// Enviando: 😀 [2025-06-24T12:00:00.000Z] ¡Hola mundo! 🎉
+          </code></pre>
+        </section>
+
+        <section data-cat="structural">
+          <h3>✅ Ventajas y ⚠️ Desventajas</h3>
+          <div class="pros-cons">
+            <div class="panel pros">
+              <h4>✅ Ventajas</h4>
+              <ul>
+                <li>Extiende funcionalidad de forma flexible y dinámica.</li>
+                <li>Evita explosión de subclases por combinación.</li>
+                <li>Respeta la responsabilidad única.</li>
+              </ul>
+            </div>
+            <div class="panel cons">
+              <h4>⚠️ Desventajas</h4>
+              <ul>
+                <li>Puede generar muchos objetos anidados.</li>
+                <li>Más difícil de depurar que la herencia simple.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Ejemplos reales 🌍</h3>
+          <div class="cards two" style="align-items: start">
+            <div class="card">
+              <h4>☕ Cafetería de la UCU</h4>
+              <p>Agrega ingredientes a una bebida de forma flexible, sin crear una clase por cada combinación posible.</p>
+              <p style="margin-top: 0.4em">
+                <strong>Bebida base:</strong> café americano, latte.<br>
+                <strong>Decoradores:</strong> leche, crema, jarabe de vainilla, canela, chocolate.
+              </p>
+            </div>
+            <div class="card">
+              <h4>🔐 Sistema de autenticación</h4>
+              <p>Suma controles sobre la autenticación base sin modificarla, respetando OCP.</p>
+              <p style="margin-top: 0.4em">
+                <strong>Componente base:</strong> usuario autenticado.<br>
+                <strong>Decoradores:</strong> doble factor, validación biométrica, captcha, firma digital, revisión de IP geográfica.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Ejemplo aplicado — editor de fotos 🖼️</h3>
+          <p class="lead" style="font-size: 0.78em">
+            Una <code>ImagenOriginal</code> se envuelve en capas apilables:
+            <code>Marco</code>, <code>FiltroSepia</code>, <code>Sticker</code>, <code>Texto</code>…
+          </p>
+          <pre><code class="language-js" data-trim>
+let foto = new ImagenOriginal();
+foto = new Marco(foto);
+foto = new FiltroSepia(foto);
+foto = new Sticker(foto);
+foto = new Texto(foto);
+
+foto.Mostrar();
+// "Imagen original + marco blanco + filtro sepia
+//  + sticker de emoji 😎 + texto: 'Vacaciones 2025'"
+          </code></pre>
         </section>
 
         <section data-cat="structural">
@@ -1566,7 +1660,7 @@ svgCircle.draw();    // <circle cx='0' cy='0' r='10' />
               <!-- ImagenOriginal --|> Foto -->
               <path class="edge dash" d="M180 170 L180 110 L420 110 L420 88" marker-end="url(#tri)" />
               <!-- DecoradorBase --|> Foto -->
-              <path class="edge dash" d="M560 162 L490 110 L490 88" marker-end="url(#tri)" />
+              <path class="edge dash" d="M595 162 L595 120 L490 120 L490 88" marker-end="url(#tri)" />
               <!-- DecoradorBase o-> Foto (composición recursiva) -->
               <path class="edge dash" d="M720 188 L800 188 L800 56 L560 56" marker-end="url(#arrow)" />
               <text class="elabel" x="788" y="120" text-anchor="middle">foto</text>
@@ -1627,122 +1721,6 @@ svgCircle.draw();    // <circle cx='0' cy='0' r='10' />
           </div>
         </section>
 
-        <section data-cat="structural">
-          <h3>Component y Decorator base</h3>
-          <pre><code class="language-js" data-trim>
-// Component
-class Notifier {
-  send(message) { throw new Error("Debe implementarse"); }
-}
-
-// ConcreteComponent
-class BasicNotifier extends Notifier {
-  send(message) { console.log("Enviando:", message); }
-}
-
-// Decorator base: envuelve a otro Notifier y delega
-class NotifierDecorator extends Notifier {
-  constructor(notifier) { super(); this.notifier = notifier; }
-  send(message) { this.notifier.send(message); }
-}
-          </code></pre>
-        </section>
-
-        <section data-cat="structural">
-          <h3>ConcreteDecorators</h3>
-          <pre><code class="language-js" data-trim>
-class EmojiDecorator extends NotifierDecorator {
-  send(message) { super.send("😀 " + message + " 🎉"); }
-}
-
-class TimestampDecorator extends NotifierDecorator {
-  send(message) {
-    const ts = new Date().toISOString();
-    super.send(`[${ts}] ${message}`);
-  }
-}
-          </code></pre>
-        </section>
-
-        <section data-cat="structural">
-          <h3>Uso desde el cliente</h3>
-          <pre><code class="language-js" data-trim>
-// Composición dinámica: se apilan decoradores
-let notifier = new BasicNotifier();
-notifier = new TimestampDecorator(notifier);
-notifier = new EmojiDecorator(notifier);
-
-notifier.send("¡Hola mundo!");
-// Enviando: 😀 [2025-06-24T12:00:00.000Z] ¡Hola mundo! 🎉
-          </code></pre>
-        </section>
-
-        <section data-cat="structural">
-          <h3>✅ Ventajas, ⚠️ Desventajas y 🆚 vs. Adapter</h3>
-          <div class="pros-cons">
-            <div class="panel pros">
-              <h4>✅ Ventajas</h4>
-              <ul>
-                <li>Extiende funcionalidad de forma flexible y dinámica.</li>
-                <li>Evita explosión de subclases por combinación.</li>
-                <li>Respeta la responsabilidad única.</li>
-              </ul>
-            </div>
-            <div class="panel cons">
-              <h4>⚠️ Desventajas</h4>
-              <ul>
-                <li>Puede generar muchos objetos anidados.</li>
-                <li>Más difícil de depurar que la herencia simple.</li>
-              </ul>
-            </div>
-          </div>
-          <div class="callout" style="margin-top: 0.7em">
-            🆚 <strong>Adapter</strong> cambia la <em>interfaz</em>;
-            <strong>Decorator</strong> agrega <em>comportamiento</em> manteniéndola.
-          </div>
-        </section>
-
-        <section data-cat="structural">
-          <h3>Ejemplos reales 🌍</h3>
-          <div class="cards two" style="align-items: start">
-            <div class="card">
-              <h4>☕ Cafetería de la UCU</h4>
-              <p>Agrega ingredientes a una bebida de forma flexible, sin crear una clase por cada combinación posible.</p>
-              <p style="margin-top: 0.4em">
-                <strong>Bebida base:</strong> café americano, latte.<br>
-                <strong>Decoradores:</strong> leche, crema, jarabe de vainilla, canela, chocolate.
-              </p>
-            </div>
-            <div class="card">
-              <h4>🔐 Sistema de autenticación</h4>
-              <p>Suma controles sobre la autenticación base sin modificarla, respetando OCP.</p>
-              <p style="margin-top: 0.4em">
-                <strong>Componente base:</strong> usuario autenticado.<br>
-                <strong>Decoradores:</strong> doble factor, validación biométrica, captcha, firma digital, revisión de IP geográfica.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section data-cat="structural">
-          <h3>Ejemplo aplicado — editor de fotos 🖼️</h3>
-          <p class="lead" style="font-size: 0.78em">
-            Una <code>ImagenOriginal</code> se envuelve en capas apilables:
-            <code>Marco</code>, <code>FiltroSepia</code>, <code>Sticker</code>, <code>Texto</code>…
-          </p>
-          <pre><code class="language-js" data-trim>
-let foto = new ImagenOriginal();
-foto = new Marco(foto);
-foto = new FiltroSepia(foto);
-foto = new Sticker(foto);
-foto = new Texto(foto);
-
-foto.Mostrar();
-// "Imagen original + marco blanco + filtro sepia
-//  + sticker de emoji 😎 + texto: 'Vacaciones 2025'"
-          </code></pre>
-        </section>
-
         <!-- PATRON: Facade -->
         <section data-cat="structural">
           <div class="pattern-title">
@@ -1767,6 +1745,58 @@ foto.Mostrar();
             <li>Cuando querés desacoplar al cliente del subsistema.</li>
             <li>Cuando trabajás con librerías o APIs con muchas dependencias.</li>
           </ul>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Subsistema 🎬</h3>
+          <pre><code class="language-js" data-trim>
+class Amplifier {
+  on() { console.log("Amplificador encendido"); }
+}
+
+class StreamingPlayer {
+  on() { console.log("Reproductor encendido"); }
+  play(movie) { console.log(`Reproduciendo ${movie}`); }
+}
+
+class TheaterLights {
+  dim(level) { console.log(`Luces atenuadas a ${level}%`); }
+}
+          </code></pre>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Facade: HomeTheaterFacade 🍿</h3>
+          <pre><code class="language-js" data-trim>
+class HomeTheaterFacade {
+  constructor(amp, player, lights) {
+    this.amp = amp; this.player = player; this.lights = lights;
+  }
+
+  // un solo método orquesta todo el subsistema
+  watchMovie(movie) {
+    console.log("Preparando para ver una película...");
+    this.lights.dim(10);
+    this.amp.on();
+    this.player.on();
+    this.player.play(movie);
+  }
+}
+          </code></pre>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Sin Facade ❌ vs. con Facade ✅</h3>
+          <pre><code class="language-js" data-trim>
+// ❌ El cliente coordina cada paso, repetido en todos lados
+lights.dim(10); amp.on(); player.on(); player.play("Matrix");
+
+// ✅ El cliente delega en la fachada
+const homeTheater = new HomeTheaterFacade(amp, player, lights);
+homeTheater.watchMovie("Matrix");
+// Preparando para ver una película...
+// Luces atenuadas a 10% / Amplificador encendido / ...
+          </code></pre>
         </section>
 
         <section data-cat="structural">
@@ -1869,59 +1899,7 @@ foto.Mostrar();
         </section>
 
         <section data-cat="structural">
-          <h3>Subsistema 🎬</h3>
-          <pre><code class="language-js" data-trim>
-class Amplifier {
-  on() { console.log("Amplificador encendido"); }
-}
-
-class StreamingPlayer {
-  on() { console.log("Reproductor encendido"); }
-  play(movie) { console.log(`Reproduciendo ${movie}`); }
-}
-
-class TheaterLights {
-  dim(level) { console.log(`Luces atenuadas a ${level}%`); }
-}
-          </code></pre>
-        </section>
-
-        <section data-cat="structural">
-          <h3>Facade: HomeTheaterFacade 🍿</h3>
-          <pre><code class="language-js" data-trim>
-class HomeTheaterFacade {
-  constructor(amp, player, lights) {
-    this.amp = amp; this.player = player; this.lights = lights;
-  }
-
-  // un solo método orquesta todo el subsistema
-  watchMovie(movie) {
-    console.log("Preparando para ver una película...");
-    this.lights.dim(10);
-    this.amp.on();
-    this.player.on();
-    this.player.play(movie);
-  }
-}
-          </code></pre>
-        </section>
-
-        <section data-cat="structural">
-          <h3>Sin Facade ❌ vs. con Facade ✅</h3>
-          <pre><code class="language-js" data-trim>
-// ❌ El cliente coordina cada paso, repetido en todos lados
-lights.dim(10); amp.on(); player.on(); player.play("Matrix");
-
-// ✅ El cliente delega en la fachada
-const homeTheater = new HomeTheaterFacade(amp, player, lights);
-homeTheater.watchMovie("Matrix");
-// Preparando para ver una película...
-// Luces atenuadas a 10% / Amplificador encendido / ...
-          </code></pre>
-        </section>
-
-        <section data-cat="structural">
-          <h3>✅ Ventajas, ⚠️ Desventajas y 🆚</h3>
+          <h3>✅ Ventajas y ⚠️ Desventajas</h3>
           <div class="pros-cons">
             <div class="panel pros">
               <h4>✅ Ventajas</h4>
@@ -1938,10 +1916,6 @@ homeTheater.watchMovie("Matrix");
                 <li>No impide el acceso directo al subsistema.</li>
               </ul>
             </div>
-          </div>
-          <div class="callout" style="margin-top: 0.7em">
-            🆚 <strong>Facade</strong> simplifica lo complejo · <strong>Adapter</strong>
-            convierte interfaces · <strong>Decorator</strong> agrega comportamiento.
           </div>
         </section>
 
@@ -1999,6 +1973,41 @@ homeTheater.watchMovie("Matrix");
         </section>
 
         <section data-cat="structural">
+          <h3>Subject y Proxy virtual</h3>
+          <pre><code class="language-js" data-trim>
+// RealSubject: costoso de crear (carga al instanciarse)
+class Video {
+  constructor(filename) {
+    this.filename = filename;
+    this.load();
+  }
+  load() { console.log(`Cargando ${this.filename}...`); }
+  play() { console.log(`Reproduciendo ${this.filename}`); }
+}
+
+// Proxy: difiere la carga hasta el primer play()
+class VideoProxy {
+  constructor(filename) { this.filename = filename; this.real = null; }
+  play() {
+    if (!this.real) this.real = new Video(this.filename); // lazy
+    this.real.play();
+  }
+}
+          </code></pre>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Uso desde el cliente</h3>
+          <pre><code class="language-js" data-trim>
+const video = new VideoProxy("pelicula.mp4");
+console.log("Creado, pero todavía NO cargado");
+
+video.play(); // recién acá se carga y reproduce
+video.play(); // ya cargado → reproduce directamente
+          </code></pre>
+        </section>
+
+        <section data-cat="structural">
           <h3>Estructura (UML)</h3>
           <div class="uml">
             <svg viewBox="0 0 900 430" role="img" aria-label="Diagrama UML del patrón Proxy">
@@ -2041,9 +2050,8 @@ homeTheater.watchMovie("Matrix");
               <path class="edge dash" d="M655 160 L655 110 L520 110 L520 86" marker-end="url(#tri)" />
               <!-- PlataformaContenido --|> IPlataformaContenido -->
               <path class="edge dash" d="M205 190 L205 110 L390 110 L390 86" marker-end="url(#tri)" />
-              <!-- Proxy o-> PlataformaContenido -->
-              <path class="edge" d="M470 210 L350 220" marker-end="url(#arrow)" />
-              <text class="elabel" x="410" y="200" text-anchor="middle">_plataformaContenido</text>
+              <!-- Proxy o-> PlataformaContenido (ref. _plataformaContenido, ya en la caja) -->
+              <path class="edge" d="M470 208 L350 218" marker-end="url(#arrow)" />
               <!-- PlataformaContenido o-> Contenido -->
               <path class="edge" d="M205 256 L205 330" marker-end="url(#arrow)" />
             </svg>
@@ -2091,42 +2099,7 @@ homeTheater.watchMovie("Matrix");
         </section>
 
         <section data-cat="structural">
-          <h3>Subject y Proxy virtual</h3>
-          <pre><code class="language-js" data-trim>
-// RealSubject: costoso de crear (carga al instanciarse)
-class Video {
-  constructor(filename) {
-    this.filename = filename;
-    this.load();
-  }
-  load() { console.log(`Cargando ${this.filename}...`); }
-  play() { console.log(`Reproduciendo ${this.filename}`); }
-}
-
-// Proxy: difiere la carga hasta el primer play()
-class VideoProxy {
-  constructor(filename) { this.filename = filename; this.real = null; }
-  play() {
-    if (!this.real) this.real = new Video(this.filename); // lazy
-    this.real.play();
-  }
-}
-          </code></pre>
-        </section>
-
-        <section data-cat="structural">
-          <h3>Uso desde el cliente</h3>
-          <pre><code class="language-js" data-trim>
-const video = new VideoProxy("pelicula.mp4");
-console.log("Creado, pero todavía NO cargado");
-
-video.play(); // recién acá se carga y reproduce
-video.play(); // ya cargado → reproduce directamente
-          </code></pre>
-        </section>
-
-        <section data-cat="structural">
-          <h3>✅ Ventajas, ⚠️ Desventajas y 🆚</h3>
+          <h3>✅ Ventajas y ⚠️ Desventajas</h3>
           <div class="pros-cons">
             <div class="panel pros">
               <h4>✅ Ventajas</h4>
@@ -2143,11 +2116,6 @@ video.play(); // ya cargado → reproduce directamente
                 <li>Mal diseñado, puede afectar el rendimiento.</li>
               </ul>
             </div>
-          </div>
-          <div class="callout" style="margin-top: 0.7em">
-            🆚 <strong>Proxy</strong> controla el <em>acceso</em> ·
-            <strong>Decorator</strong> agrega <em>comportamiento</em> ·
-            <strong>Adapter</strong> transforma <em>interfaces</em>.
           </div>
         </section>
 
@@ -2176,21 +2144,6 @@ video.play(); // ya cargado → reproduce directamente
             🎬 Combina <strong>control de acceso</strong> (protección) con
             <strong>inicialización diferida</strong>: el contenido pesado se carga recién al pasar los controles.
           </div>
-        </section>
-
-        <section data-cat="structural">
-          <h3>🆚 Facade vs. Proxy vs. Decorator</h3>
-          <table>
-            <thead>
-              <tr><th></th><th>🏢 Facade</th><th>🛡️ Proxy</th><th>🎁 Decorator</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><strong>Propósito</strong></td><td>Simplificar un uso complejo</td><td>Controlar el acceso</td><td>Añadir funcionalidades</td></tr>
-              <tr><td><strong>¿Oculta complejidad?</strong></td><td>Sí</td><td>Parcialmente</td><td>No</td></tr>
-              <tr><td><strong>Metáfora</strong></td><td>Recepcionista</td><td>Portero</td><td>Envoltura decorativa</td></tr>
-              <tr><td><strong>Ejemplo</strong></td><td>Comprar ahora</td><td>Carga de video</td><td>Cafetería</td></tr>
-            </tbody>
-          </table>
         </section>
 
         <!-- ====================================================================
