@@ -1190,6 +1190,38 @@ printer.printMessage("Hola mundo"); // >>> Hola mundo
           </div>
         </section>
 
+        <section data-cat="structural">
+          <h3>Diagrama de secuencia 🔀</h3>
+          <div class="uml">
+            <svg viewBox="0 0 900 280" role="img" aria-label="Diagrama de secuencia del patrón Adapter">
+              <!-- participantes -->
+              <g>
+                <rect class="box" x="40" y="20" width="140" height="44" rx="9" />
+                <text class="name" x="110" y="48" style="font-size: 13px">Cliente</text>
+              </g>
+              <g>
+                <rect class="box" x="310" y="20" width="280" height="44" rx="9" />
+                <text class="name" x="450" y="48" style="font-size: 12px">IPago (PayPalAdapter)</text>
+              </g>
+              <g>
+                <rect class="box" x="690" y="20" width="180" height="44" rx="9" />
+                <text class="name" x="780" y="48" style="font-size: 12px">PayPalService</text>
+              </g>
+              <!-- lifelines -->
+              <line class="lifeline" x1="110" y1="64" x2="110" y2="260" />
+              <line class="lifeline" x1="450" y1="64" x2="450" y2="260" />
+              <line class="lifeline" x1="780" y1="64" x2="780" y2="260" />
+              <!-- mensajes -->
+              <text class="seqlabel" x="280" y="112">Pagar(monto)</text>
+              <path class="msg" d="M110 120 L450 120" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="615" y="172">SendPayment(moneda, monto)</text>
+              <path class="msg" d="M450 180 L780 180" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="615" y="222">ok</text>
+              <path class="msg ret" d="M780 230 L450 230" marker-end="url(#arrow)" />
+            </svg>
+          </div>
+        </section>
+
         <!-- PATRON: Bridge -->
         <section data-cat="structural">
           <div class="pattern-title">
@@ -1223,6 +1255,99 @@ printer.printMessage("Hola mundo"); // >>> Hola mundo
             <div class="card"><h4>RefinedAbstraction</h4><p>Extiende la abstracción y delega en un implementor.</p></div>
             <div class="card"><h4>Implementor</h4><p>Define la interfaz de implementación.</p></div>
             <div class="card"><h4>ConcreteImplementor</h4><p>Implementaciones concretas del implementor.</p></div>
+          </div>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Estructura (UML)</h3>
+          <div class="uml">
+            <svg viewBox="0 0 900 400" role="img" aria-label="Diagrama UML del patrón Bridge">
+              <!-- Window (abstract) -->
+              <g>
+                <rect class="box" x="50" y="40" width="330" height="104" rx="9" />
+                <rect class="box-bar" x="50" y="40" width="330" height="30" rx="9" />
+                <rect class="box-bar" x="50" y="64" width="330" height="6" />
+                <text class="stereo" x="215" y="54">«abstract»</text>
+                <text class="name" x="215" y="66" style="font-size: 13px">Window</text>
+                <text class="member" x="66" y="94">- implementor: IWindowImplementor</text>
+                <line class="sep" x1="50" y1="106" x2="380" y2="106" />
+                <text class="member" x="66" y="130">+ Draw()</text>
+              </g>
+              <!-- IWindowImplementor (interface) -->
+              <g class="iface">
+                <rect class="box" x="540" y="40" width="320" height="80" rx="9" />
+                <rect class="box-bar" x="540" y="40" width="320" height="30" rx="9" />
+                <rect class="box-bar" x="540" y="64" width="320" height="6" />
+                <text class="stereo" x="700" y="54">«interface»</text>
+                <text class="name" x="700" y="66" style="font-size: 13px">IWindowImplementor</text>
+                <text class="member" x="556" y="98">+ DrawWindow(title: string)</text>
+              </g>
+              <!-- DialogWindow -->
+              <g>
+                <rect class="box" x="50" y="262" width="330" height="96" rx="9" />
+                <rect class="box-bar" x="50" y="262" width="330" height="30" rx="9" />
+                <rect class="box-bar" x="50" y="286" width="330" height="6" />
+                <text class="name" x="215" y="282" style="font-size: 13px">DialogWindow</text>
+                <text class="member" x="66" y="314">- title: string</text>
+                <line class="sep" x1="50" y1="324" x2="380" y2="324" />
+                <text class="member" x="66" y="346">+ Draw()</text>
+              </g>
+              <!-- WindowsWindowImplementor -->
+              <g>
+                <rect class="box" x="485" y="280" width="185" height="60" rx="9" />
+                <rect class="box-bar" x="485" y="280" width="185" height="26" rx="9" />
+                <rect class="box-bar" x="485" y="302" width="185" height="6" />
+                <text class="name" x="577" y="297" style="font-size: 10.5px">WindowsWindowImplementor</text>
+              </g>
+              <!-- LinuxWindowImplementor -->
+              <g>
+                <rect class="box" x="690" y="280" width="185" height="60" rx="9" />
+                <rect class="box-bar" x="690" y="280" width="185" height="26" rx="9" />
+                <rect class="box-bar" x="690" y="302" width="185" height="6" />
+                <text class="name" x="782" y="297" style="font-size: 10.5px">LinuxWindowImplementor</text>
+              </g>
+              <!-- Window o-> IWindowImplementor (el "bridge") -->
+              <path class="edge" d="M380 80 L540 80" marker-end="url(#arrow)" />
+              <text class="elabel" x="460" y="72" text-anchor="middle">bridge</text>
+              <!-- DialogWindow --|> Window -->
+              <path class="edge" d="M215 262 L215 144" marker-end="url(#tri)" />
+              <!-- realizaciones hacia IWindowImplementor -->
+              <path class="edge dash" d="M577 280 L577 180 L700 180 L700 120" marker-end="url(#tri)" />
+              <path class="edge dash" d="M782 280 L782 180 L700 180" />
+            </svg>
+          </div>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Diagrama de secuencia 🔀</h3>
+          <div class="uml">
+            <svg viewBox="0 0 900 290" role="img" aria-label="Diagrama de secuencia del patrón Bridge">
+              <!-- participantes -->
+              <g>
+                <rect class="box" x="40" y="20" width="140" height="44" rx="9" />
+                <text class="name" x="110" y="48" style="font-size: 13px">Cliente</text>
+              </g>
+              <g>
+                <rect class="box" x="320" y="20" width="200" height="44" rx="9" />
+                <text class="name" x="420" y="48" style="font-size: 13px">DialogWindow</text>
+              </g>
+              <g>
+                <rect class="box" x="600" y="14" width="300" height="56" rx="9" />
+                <text class="name" x="750" y="38" style="font-size: 12px">IWindowImplementor</text>
+                <text class="member" x="750" y="58" style="text-anchor: middle; font-size: 10.5px">(Windows o Linux)</text>
+              </g>
+              <!-- lifelines -->
+              <line class="lifeline" x1="110" y1="64" x2="110" y2="270" />
+              <line class="lifeline" x1="420" y1="64" x2="420" y2="270" />
+              <line class="lifeline" x1="750" y1="70" x2="750" y2="270" />
+              <!-- mensajes -->
+              <text class="seqlabel" x="265" y="122">Draw()</text>
+              <path class="msg" d="M110 130 L420 130" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="585" y="182">DrawWindow(title)</text>
+              <path class="msg" d="M420 190 L750 190" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="585" y="232">render</text>
+              <path class="msg ret" d="M750 240 L420 240" marker-end="url(#arrow)" />
+            </svg>
           </div>
         </section>
 
@@ -1382,6 +1507,127 @@ svgCircle.draw();    // <circle cx='0' cy='0' r='10' />
         </section>
 
         <section data-cat="structural">
+          <h3>Estructura (UML)</h3>
+          <div class="uml">
+            <svg viewBox="0 0 900 430" role="img" aria-label="Diagrama UML del patrón Decorator">
+              <!-- Foto (abstract = Component) -->
+              <g>
+                <rect class="box" x="350" y="24" width="210" height="64" rx="9" />
+                <rect class="box-bar" x="350" y="24" width="210" height="30" rx="9" />
+                <rect class="box-bar" x="350" y="48" width="210" height="6" />
+                <text class="stereo" x="455" y="38">«abstract»</text>
+                <text class="name" x="455" y="50" style="font-size: 13px">Foto</text>
+                <text class="member" x="366" y="76">+ Mostrar(): string</text>
+              </g>
+              <!-- ImagenOriginal (ConcreteComponent) -->
+              <g>
+                <rect class="box" x="80" y="170" width="200" height="62" rx="9" />
+                <rect class="box-bar" x="80" y="170" width="200" height="28" rx="9" />
+                <rect class="box-bar" x="80" y="192" width="200" height="6" />
+                <text class="name" x="180" y="188" style="font-size: 13px">ImagenOriginal</text>
+                <text class="member" x="96" y="218">+ Mostrar(): string</text>
+              </g>
+              <!-- DecoradorBase (abstract Decorator) -->
+              <g>
+                <rect class="box" x="470" y="162" width="250" height="86" rx="9" />
+                <rect class="box-bar" x="470" y="162" width="250" height="30" rx="9" />
+                <rect class="box-bar" x="470" y="186" width="250" height="6" />
+                <text class="stereo" x="595" y="176">«abstract»</text>
+                <text class="name" x="595" y="188" style="font-size: 13px">DecoradorBase</text>
+                <text class="member" x="486" y="214">- foto: Foto</text>
+                <line class="sep" x1="470" y1="224" x2="720" y2="224" />
+                <text class="member" x="486" y="242">+ Mostrar(): string</text>
+              </g>
+              <!-- Concrete decorators -->
+              <g>
+                <rect class="box" x="60" y="350" width="160" height="56" rx="9" />
+                <rect class="box-bar" x="60" y="350" width="160" height="26" rx="9" />
+                <rect class="box-bar" x="60" y="372" width="160" height="6" />
+                <text class="name" x="140" y="367" style="font-size: 12px">Marco</text>
+              </g>
+              <g>
+                <rect class="box" x="240" y="350" width="160" height="56" rx="9" />
+                <rect class="box-bar" x="240" y="350" width="160" height="26" rx="9" />
+                <rect class="box-bar" x="240" y="372" width="160" height="6" />
+                <text class="name" x="320" y="367" style="font-size: 12px">FiltroSepia</text>
+              </g>
+              <g>
+                <rect class="box" x="420" y="350" width="160" height="56" rx="9" />
+                <rect class="box-bar" x="420" y="350" width="160" height="26" rx="9" />
+                <rect class="box-bar" x="420" y="372" width="160" height="6" />
+                <text class="name" x="500" y="367" style="font-size: 12px">Sticker</text>
+              </g>
+              <g>
+                <rect class="box" x="600" y="350" width="160" height="56" rx="9" />
+                <rect class="box-bar" x="600" y="350" width="160" height="26" rx="9" />
+                <rect class="box-bar" x="600" y="372" width="160" height="6" />
+                <text class="name" x="680" y="367" style="font-size: 12px">Texto</text>
+              </g>
+              <!-- ImagenOriginal --|> Foto -->
+              <path class="edge dash" d="M180 170 L180 110 L420 110 L420 88" marker-end="url(#tri)" />
+              <!-- DecoradorBase --|> Foto -->
+              <path class="edge dash" d="M560 162 L490 110 L490 88" marker-end="url(#tri)" />
+              <!-- DecoradorBase o-> Foto (composición recursiva) -->
+              <path class="edge dash" d="M720 188 L800 188 L800 56 L560 56" marker-end="url(#arrow)" />
+              <text class="elabel" x="788" y="120" text-anchor="middle">foto</text>
+              <!-- concretos --|> DecoradorBase -->
+              <path class="edge" d="M140 350 L140 300 L560 300 L560 248" marker-end="url(#tri)" />
+              <path class="edge" d="M320 350 L320 300" />
+              <path class="edge" d="M500 350 L500 300" />
+              <path class="edge" d="M680 350 L680 300 L560 300" />
+            </svg>
+          </div>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Diagrama de secuencia 🔀</h3>
+          <p class="lead" style="font-size: 0.72em; margin-bottom: 0.3em">
+            Los objetos ya fueron creados anidando <code>new()</code>. Al pedir
+            <code>Mostrar()</code>, cada capa delega y suma su parte al resultado.
+          </p>
+          <div class="uml">
+            <svg viewBox="0 0 900 470" role="img" aria-label="Diagrama de secuencia del patrón Decorator">
+              <!-- participantes (orden de delegación) -->
+              <g><rect class="box" x="18" y="20" width="95" height="40" rx="8" /><text class="name" x="65" y="45" style="font-size: 11px">Usuario</text></g>
+              <g><rect class="box" x="150" y="20" width="100" height="40" rx="8" /><text class="name" x="200" y="45" style="font-size: 11px">Texto</text></g>
+              <g><rect class="box" x="290" y="20" width="100" height="40" rx="8" /><text class="name" x="340" y="45" style="font-size: 11px">Sticker</text></g>
+              <g><rect class="box" x="420" y="20" width="130" height="40" rx="8" /><text class="name" x="485" y="45" style="font-size: 11px">FiltroSepia</text></g>
+              <g><rect class="box" x="585" y="20" width="110" height="40" rx="8" /><text class="name" x="640" y="45" style="font-size: 11px">Marco</text></g>
+              <g><rect class="box" x="735" y="20" width="150" height="40" rx="8" /><text class="name" x="810" y="45" style="font-size: 10.5px">ImagenOriginal</text></g>
+              <!-- lifelines -->
+              <line class="lifeline" x1="65" y1="60" x2="65" y2="455" />
+              <line class="lifeline" x1="200" y1="60" x2="200" y2="455" />
+              <line class="lifeline" x1="340" y1="60" x2="340" y2="455" />
+              <line class="lifeline" x1="485" y1="60" x2="485" y2="455" />
+              <line class="lifeline" x1="640" y1="60" x2="640" y2="455" />
+              <line class="lifeline" x1="810" y1="60" x2="810" y2="455" />
+              <!-- llamadas Mostrar() (descendente, izq→der) -->
+              <text class="seqlabel" x="132" y="98">Mostrar()</text>
+              <path class="msg" d="M65 106 L200 106" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="270" y="138">Mostrar()</text>
+              <path class="msg" d="M200 146 L340 146" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="412" y="178">Mostrar()</text>
+              <path class="msg" d="M340 186 L485 186" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="562" y="218">Mostrar()</text>
+              <path class="msg" d="M485 226 L640 226" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="725" y="258">Mostrar()</text>
+              <path class="msg" d="M640 266 L810 266" marker-end="url(#arrow)" />
+              <!-- retornos (ascendente, der→izq) -->
+              <text class="seqlabel" x="725" y="300">"Imagen original"</text>
+              <path class="msg ret" d="M810 308 L640 308" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="562" y="338">+ marco blanco</text>
+              <path class="msg ret" d="M640 346 L485 346" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="412" y="376">+ filtro sepia</text>
+              <path class="msg ret" d="M485 384 L340 384" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="270" y="414">+ sticker 😎</text>
+              <path class="msg ret" d="M340 422 L200 422" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="132" y="448">+ texto: 'Vacaciones 2025'</text>
+              <path class="msg ret" d="M200 452 L65 452" marker-end="url(#arrow)" />
+            </svg>
+          </div>
+        </section>
+
+        <section data-cat="structural">
           <h3>Component y Decorator base</h3>
           <pre><code class="language-js" data-trim>
 // Component
@@ -1524,6 +1770,105 @@ foto.Mostrar();
         </section>
 
         <section data-cat="structural">
+          <h3>Estructura (UML)</h3>
+          <div class="uml">
+            <svg viewBox="0 0 900 400" role="img" aria-label="Diagrama UML del patrón Facade con una cámara">
+              <!-- Cámara (Facade) -->
+              <g>
+                <rect class="box" x="350" y="30" width="200" height="64" rx="9" />
+                <rect class="box-bar" x="350" y="30" width="200" height="30" rx="9" />
+                <rect class="box-bar" x="350" y="54" width="200" height="6" />
+                <text class="name" x="450" y="50" style="font-size: 13px">Cámara</text>
+                <text class="member" x="366" y="82">+ TomarFoto(): void</text>
+              </g>
+              <!-- Subsistemas -->
+              <g>
+                <rect class="box" x="20" y="250" width="160" height="70" rx="9" />
+                <rect class="box-bar" x="20" y="250" width="160" height="26" rx="9" />
+                <rect class="box-bar" x="20" y="272" width="160" height="6" />
+                <text class="name" x="100" y="267" style="font-size: 12px">Enfoque</text>
+                <text class="member" x="36" y="300" style="font-size: 10.5px">+ Enfocar(): void</text>
+              </g>
+              <g>
+                <rect class="box" x="195" y="250" width="160" height="70" rx="9" />
+                <rect class="box-bar" x="195" y="250" width="160" height="26" rx="9" />
+                <rect class="box-bar" x="195" y="272" width="160" height="6" />
+                <text class="name" x="275" y="267" style="font-size: 12px">Sensor</text>
+                <text class="member" x="211" y="300" style="font-size: 10.5px">+ Capturar(): string</text>
+              </g>
+              <g>
+                <rect class="box" x="370" y="250" width="160" height="70" rx="9" />
+                <rect class="box-bar" x="370" y="250" width="160" height="26" rx="9" />
+                <rect class="box-bar" x="370" y="272" width="160" height="6" />
+                <text class="name" x="450" y="267" style="font-size: 12px">Estabilización</text>
+                <text class="member" x="386" y="300" style="font-size: 10px">+ Estabilizar(c): string</text>
+              </g>
+              <g>
+                <rect class="box" x="545" y="250" width="160" height="70" rx="9" />
+                <rect class="box-bar" x="545" y="250" width="160" height="26" rx="9" />
+                <rect class="box-bar" x="545" y="272" width="160" height="6" />
+                <text class="name" x="625" y="267" style="font-size: 12px">Flash</text>
+                <text class="member" x="561" y="300" style="font-size: 10.5px">+ Disparar(): void</text>
+              </g>
+              <g>
+                <rect class="box" x="720" y="250" width="160" height="70" rx="9" />
+                <rect class="box-bar" x="720" y="250" width="160" height="26" rx="9" />
+                <rect class="box-bar" x="720" y="272" width="160" height="6" />
+                <text class="name" x="800" y="267" style="font-size: 11px">Almacenamiento</text>
+                <text class="member" x="736" y="300" style="font-size: 10px">+ Almacenar(c): void</text>
+              </g>
+              <!-- Cámara -> subsistemas -->
+              <path class="edge" d="M380 94 L100 250" marker-end="url(#arrow)" />
+              <path class="edge" d="M420 94 L275 250" marker-end="url(#arrow)" />
+              <path class="edge" d="M450 94 L450 250" marker-end="url(#arrow)" />
+              <path class="edge" d="M480 94 L625 250" marker-end="url(#arrow)" />
+              <path class="edge" d="M520 94 L800 250" marker-end="url(#arrow)" />
+            </svg>
+          </div>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Diagrama de secuencia 🔀</h3>
+          <div class="uml">
+            <svg viewBox="0 0 900 410" role="img" aria-label="Diagrama de secuencia del patrón Facade con una cámara">
+              <!-- participantes -->
+              <g><rect class="box" x="14" y="18" width="96" height="40" rx="8" /><text class="name" x="62" y="43" style="font-size: 11px">Usuario</text></g>
+              <g><rect class="box" x="130" y="18" width="96" height="40" rx="8" /><text class="name" x="178" y="43" style="font-size: 11px">Cámara</text></g>
+              <g><rect class="box" x="262" y="18" width="100" height="40" rx="8" /><text class="name" x="312" y="43" style="font-size: 11px">Enfoque</text></g>
+              <g><rect class="box" x="392" y="18" width="86" height="40" rx="8" /><text class="name" x="435" y="43" style="font-size: 11px">Flash</text></g>
+              <g><rect class="box" x="500" y="18" width="96" height="40" rx="8" /><text class="name" x="548" y="43" style="font-size: 11px">Sensor</text></g>
+              <g><rect class="box" x="616" y="18" width="130" height="40" rx="8" /><text class="name" x="681" y="43" style="font-size: 10px">Estabilización</text></g>
+              <g><rect class="box" x="762" y="18" width="130" height="40" rx="8" /><text class="name" x="827" y="43" style="font-size: 9.5px">Almacenamiento</text></g>
+              <!-- lifelines -->
+              <line class="lifeline" x1="62" y1="58" x2="62" y2="395" />
+              <line class="lifeline" x1="178" y1="58" x2="178" y2="395" />
+              <line class="lifeline" x1="312" y1="58" x2="312" y2="395" />
+              <line class="lifeline" x1="435" y1="58" x2="435" y2="395" />
+              <line class="lifeline" x1="548" y1="58" x2="548" y2="395" />
+              <line class="lifeline" x1="681" y1="58" x2="681" y2="395" />
+              <line class="lifeline" x1="827" y1="58" x2="827" y2="395" />
+              <!-- mensajes -->
+              <text class="seqlabel" x="120" y="92">TomarFoto()</text>
+              <path class="msg" d="M62 100 L178 100" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="245" y="128">Enfocar()</text>
+              <path class="msg" d="M178 136 L312 136" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="306" y="164">Disparar()</text>
+              <path class="msg" d="M178 172 L435 172" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="363" y="200">foto = Capturar()</text>
+              <path class="msg" d="M178 208 L548 208" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="363" y="234">"Foto"</text>
+              <path class="msg ret" d="M548 242 L178 242" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="430" y="270">Estabilizar("Foto")</text>
+              <path class="msg" d="M178 278 L681 278" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="430" y="304">"Foto estabilizada"</text>
+              <path class="msg ret" d="M681 312 L178 312" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="502" y="350">Almacenar("Foto estabilizada")</text>
+              <path class="msg" d="M178 358 L827 358" marker-end="url(#arrow)" />
+            </svg>
+          </div>
+        </section>
+
+        <section data-cat="structural">
           <h3>Subsistema 🎬</h3>
           <pre><code class="language-js" data-trim>
 class Amplifier {
@@ -1650,6 +1995,98 @@ homeTheater.watchMovie("Matrix");
             <div class="card"><h4>Protección</h4><p>Controla permisos de acceso.</p></div>
             <div class="card"><h4>Virtual</h4><p>Crea objetos costosos bajo demanda.</p></div>
             <div class="card"><h4>Caché / Remoto</h4><p>Reutiliza resultados o representa un objeto remoto.</p></div>
+          </div>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Estructura (UML)</h3>
+          <div class="uml">
+            <svg viewBox="0 0 900 430" role="img" aria-label="Diagrama UML del patrón Proxy">
+              <!-- IPlataformaContenido (interface) -->
+              <g class="iface">
+                <rect class="box" x="300" y="24" width="300" height="62" rx="9" />
+                <rect class="box-bar" x="300" y="24" width="300" height="30" rx="9" />
+                <rect class="box-bar" x="300" y="48" width="300" height="6" />
+                <text class="stereo" x="450" y="38">«interface»</text>
+                <text class="name" x="450" y="50" style="font-size: 13px">IPlataformaContenido</text>
+                <text class="member" x="316" y="76">+ Contenido(): Contenido</text>
+              </g>
+              <!-- PlataformaContenidoProxy -->
+              <g>
+                <rect class="box" x="470" y="160" width="370" height="86" rx="9" />
+                <rect class="box-bar" x="470" y="160" width="370" height="30" rx="9" />
+                <rect class="box-bar" x="470" y="184" width="370" height="6" />
+                <text class="name" x="655" y="180" style="font-size: 13px">PlataformaContenidoProxy</text>
+                <text class="member" x="486" y="212" style="font-size: 11px">- _plataformaContenido: PlataformaContenido</text>
+                <line class="sep" x1="470" y1="222" x2="840" y2="222" />
+                <text class="member" x="486" y="240">+ Contenido(): Contenido</text>
+              </g>
+              <!-- PlataformaContenido (RealSubject) -->
+              <g>
+                <rect class="box" x="60" y="190" width="290" height="66" rx="9" />
+                <rect class="box-bar" x="60" y="190" width="290" height="30" rx="9" />
+                <rect class="box-bar" x="60" y="214" width="290" height="6" />
+                <text class="name" x="205" y="210" style="font-size: 13px">PlataformaContenido</text>
+                <text class="member" x="76" y="242">+ Contenido(): Contenido</text>
+              </g>
+              <!-- Contenido -->
+              <g>
+                <rect class="box" x="120" y="330" width="180" height="62" rx="9" />
+                <rect class="box-bar" x="120" y="330" width="180" height="28" rx="9" />
+                <rect class="box-bar" x="120" y="352" width="180" height="6" />
+                <text class="name" x="210" y="348" style="font-size: 13px">Contenido</text>
+                <text class="member" x="136" y="378">+ Bits: string</text>
+              </g>
+              <!-- Proxy --|> IPlataformaContenido -->
+              <path class="edge dash" d="M655 160 L655 110 L520 110 L520 86" marker-end="url(#tri)" />
+              <!-- PlataformaContenido --|> IPlataformaContenido -->
+              <path class="edge dash" d="M205 190 L205 110 L390 110 L390 86" marker-end="url(#tri)" />
+              <!-- Proxy o-> PlataformaContenido -->
+              <path class="edge" d="M470 210 L350 220" marker-end="url(#arrow)" />
+              <text class="elabel" x="410" y="200" text-anchor="middle">_plataformaContenido</text>
+              <!-- PlataformaContenido o-> Contenido -->
+              <path class="edge" d="M205 256 L205 330" marker-end="url(#arrow)" />
+            </svg>
+          </div>
+        </section>
+
+        <section data-cat="structural">
+          <h3>Diagrama de secuencia 🔀</h3>
+          <div class="uml">
+            <svg viewBox="0 0 900 430" role="img" aria-label="Diagrama de secuencia del patrón Proxy">
+              <!-- participantes -->
+              <g><rect class="box" x="40" y="18" width="140" height="44" rx="9" /><text class="name" x="110" y="46" style="font-size: 12px">Usuario</text></g>
+              <g><rect class="box" x="310" y="18" width="300" height="44" rx="9" /><text class="name" x="460" y="46" style="font-size: 11px">PlataformaContenidoProxy</text></g>
+              <g><rect class="box" x="680" y="18" width="200" height="44" rx="9" /><text class="name" x="780" y="46" style="font-size: 10.5px">PlataformaContenido</text></g>
+              <!-- lifelines -->
+              <line class="lifeline" x1="110" y1="62" x2="110" y2="415" />
+              <line class="lifeline" x1="460" y1="62" x2="460" y2="415" />
+              <line class="lifeline" x1="780" y1="62" x2="780" y2="415" />
+              <!-- mensajes -->
+              <text class="seqlabel" x="285" y="92">pc = new Proxy()</text>
+              <path class="msg" d="M110 100 L460 100" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="285" y="128">pc.Contenido</text>
+              <path class="msg" d="M110 136 L460 136" marker-end="url(#arrow)" />
+              <!-- controles (retornos del proxy) -->
+              <text class="seqlabel" x="285" y="164">Controlando: pago al día</text>
+              <path class="msg ret" d="M460 172 L110 172" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="285" y="194">Controlando: acceso por suscripción</text>
+              <path class="msg ret" d="M460 202 L110 202" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="285" y="224">Controlando: dispositivo autorizado</text>
+              <path class="msg ret" d="M460 232 L110 232" marker-end="url(#arrow)" />
+              <!-- alt frame: creación diferida -->
+              <rect class="frame" x="380" y="252" width="470" height="58" rx="4" />
+              <text class="note-txt" x="392" y="270">alt  [_plataformaContenido == null]</text>
+              <text class="seqlabel" x="620" y="294">new()</text>
+              <path class="msg" d="M460 300 L780 300" marker-end="url(#arrow)" />
+              <!-- obtener contenido -->
+              <text class="seqlabel" x="620" y="338">Contenido</text>
+              <path class="msg" d="M460 346 L780 346" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="620" y="368">Contenido</text>
+              <path class="msg ret" d="M780 376 L460 376" marker-end="url(#arrow)" />
+              <text class="seqlabel" x="285" y="400">Contenido</text>
+              <path class="msg ret" d="M460 408 L110 408" marker-end="url(#arrow)" />
+            </svg>
           </div>
         </section>
 
@@ -1804,6 +2241,51 @@ video.play(); // ya cargado → reproduce directamente
         </section>
 
         <section data-cat="persistence">
+          <h3>Estructura (UML)</h3>
+          <div class="uml">
+            <svg viewBox="0 0 900 410" role="img" aria-label="Diagrama UML del patrón DAO">
+              <!-- PersonDAO -->
+              <g>
+                <rect class="box" x="160" y="30" width="440" height="180" rx="9" />
+                <rect class="box-bar" x="160" y="30" width="440" height="30" rx="9" />
+                <rect class="box-bar" x="160" y="54" width="440" height="6" />
+                <text class="name" x="380" y="50" style="font-size: 13px">PersonDAO</text>
+                <text class="member" x="176" y="82">- _lastId: int</text>
+                <line class="sep" x1="160" y1="92" x2="600" y2="92" />
+                <text class="member" x="176" y="114">+ Find(id: int): PersonDTO</text>
+                <text class="member" x="176" y="136">+ FindWithLastName(ln: string): Set&lt;PersonDTO&gt;</text>
+                <text class="member" x="176" y="158">+ Insert(p: PersonDTO): int</text>
+                <text class="member" x="176" y="180">+ Update(id: int, p: PersonDTO): void</text>
+                <text class="member" x="176" y="202">+ Delete(id: int): void</text>
+              </g>
+              <!-- Dictionary -->
+              <g>
+                <rect class="box" x="680" y="70" width="180" height="56" rx="9" />
+                <rect class="box-bar" x="680" y="70" width="180" height="28" rx="9" />
+                <rect class="box-bar" x="680" y="92" width="180" height="6" />
+                <text class="name" x="770" y="88" style="font-size: 12px">Dictionary</text>
+              </g>
+              <!-- PersonDTO -->
+              <g>
+                <rect class="box" x="250" y="300" width="260" height="84" rx="9" />
+                <rect class="box-bar" x="250" y="300" width="260" height="30" rx="9" />
+                <rect class="box-bar" x="250" y="324" width="260" height="6" />
+                <text class="name" x="380" y="320" style="font-size: 13px">PersonDTO</text>
+                <text class="member" x="266" y="350">+ FirstName: string</text>
+                <text class="member" x="266" y="372">+ LastName: string</text>
+              </g>
+              <!-- PersonDAO o-> Dictionary -->
+              <path class="edge" d="M600 98 L680 98" marker-end="url(#arrow)" />
+              <text class="elabel" x="640" y="90" text-anchor="middle">_person</text>
+              <!-- PersonDAO o-> PersonDTO (1..*) -->
+              <path class="edge" d="M380 210 L380 300" marker-end="url(#arrow)" />
+              <text class="elabel" x="368" y="240" text-anchor="end">1</text>
+              <text class="elabel" x="368" y="292" text-anchor="end">*</text>
+            </svg>
+          </div>
+        </section>
+
+        <section data-cat="persistence">
           <h3>Entidad e interfaz DAO</h3>
           <pre><code class="language-js" data-trim>
 class User {
@@ -1883,6 +2365,60 @@ console.log(dao.getById(2)); // User { id: 2, name: 'Bob' }
             <li>Cuando trabajás con modelos de dominio complejos.</li>
             <li>Cuando querés desacoplar los servicios del almacenamiento.</li>
           </ul>
+        </section>
+
+        <section data-cat="persistence">
+          <h3>Estructura (UML)</h3>
+          <div class="uml">
+            <svg viewBox="0 0 900 400" role="img" aria-label="Diagrama UML del patrón Repository sobre DAO">
+              <!-- UserRepository (interface) -->
+              <g class="iface">
+                <rect class="box" x="40" y="30" width="270" height="80" rx="9" />
+                <rect class="box-bar" x="40" y="30" width="270" height="30" rx="9" />
+                <rect class="box-bar" x="40" y="54" width="270" height="6" />
+                <text class="stereo" x="175" y="44">«interface»</text>
+                <text class="name" x="175" y="56" style="font-size: 13px">UserRepository</text>
+                <text class="member" x="56" y="82">+ get(id): User</text>
+                <text class="member" x="56" y="100">+ add(user): void</text>
+              </g>
+              <!-- UserDAO (interface) -->
+              <g class="iface">
+                <rect class="box" x="590" y="30" width="270" height="80" rx="9" />
+                <rect class="box-bar" x="590" y="30" width="270" height="30" rx="9" />
+                <rect class="box-bar" x="590" y="54" width="270" height="6" />
+                <text class="stereo" x="725" y="44">«interface»</text>
+                <text class="name" x="725" y="56" style="font-size: 13px">UserDAO</text>
+                <text class="member" x="606" y="82">+ read(id): User</text>
+                <text class="member" x="606" y="100">+ create(user): void</text>
+              </g>
+              <!-- UserRepositoryImpl -->
+              <g>
+                <rect class="box" x="40" y="250" width="300" height="96" rx="9" />
+                <rect class="box-bar" x="40" y="250" width="300" height="30" rx="9" />
+                <rect class="box-bar" x="40" y="274" width="300" height="6" />
+                <text class="name" x="190" y="270" style="font-size: 13px">UserRepositoryImpl</text>
+                <text class="member" x="56" y="302">- userDao: UserDAO</text>
+                <line class="sep" x1="40" y1="312" x2="340" y2="312" />
+                <text class="member" x="56" y="334">+ get(id) · + add(user)</text>
+              </g>
+              <!-- UserDaoImpl -->
+              <g>
+                <rect class="box" x="560" y="250" width="300" height="96" rx="9" />
+                <rect class="box-bar" x="560" y="250" width="300" height="30" rx="9" />
+                <rect class="box-bar" x="560" y="274" width="300" height="6" />
+                <text class="name" x="710" y="270" style="font-size: 13px">UserDaoImpl</text>
+                <text class="member" x="576" y="302">- entityManager</text>
+                <line class="sep" x1="560" y1="312" x2="860" y2="312" />
+                <text class="member" x="576" y="334">+ read(id) · + create(user)</text>
+              </g>
+              <!-- realizaciones -->
+              <path class="edge dash" d="M190 250 L190 110" marker-end="url(#tri)" />
+              <path class="edge dash" d="M710 250 L710 110" marker-end="url(#tri)" />
+              <!-- RepositoryImpl o-> DAO -->
+              <path class="edge" d="M340 298 L560 298" marker-end="url(#arrow)" />
+              <text class="elabel" x="450" y="290" text-anchor="middle">usa</text>
+            </svg>
+          </div>
         </section>
 
         <section data-cat="persistence">
